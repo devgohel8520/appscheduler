@@ -1,0 +1,111 @@
+﻿@model App.Schedule.Web.Admin.Models.ServiceDataViewModel<App.Schedule.Domains.ViewModel.AdministratorViewModel>
+@{
+    ViewBag.Title = "Admin Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="bg-box bg-bluegray">
+            @using (Ajax.BeginForm("Edit", new AjaxOptions { }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group input-group input-group-lg">
+                    <label class="input-lg input-group-addon">
+                        Admin Profile
+                    </label>
+                </div>
+                <div class="form-horizontal">
+                    @if (Model != null && Model.HasError)
+                    {
+                        <div id="errorBox" class="alert alert-danger" role="alert">
+                            <strong id="err_head">Error: </strong>
+                            <span id="err_title">@Model.Error</span>
+                            @if (Model.HasMore)
+                            {
+                                <button data-toggle="collapse" data-target="#moreError">More</button>
+                                <div id="moreError" class="collapse">
+                                    @Model.ErrorDescription
+                                </div>
+                            }
+                        </div>
+                    }
+                    <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+                        <strong id="err_head">Error: </strong>
+                        <span id="err_title">Please try again later.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.FirstName, new { htmlAttributes = new { @class = "form-control", placeholder = "First Name", @disabled = "disabled" } })
+                                <span class="input-group-addon" id="sizing-addon2">FirstName</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.LastName, new { htmlAttributes = new { @class = "form-control", placeholder = "Last Name", @disabled = "disabled" } })
+                                <span class="input-group-addon" id="sizing-addon2">LastName</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.ContactNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Contact Number", @disabled = "disabled" } })
+                                <span class="input-group-addon" id="sizing-addon2">Contact Number</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email", @disabled = "disabled" } })
+                                <span class="input-group-addon" id="sizing-addon2">Email</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input class="form-control" disabled = "disabled" value="@ViewBag.Token" />
+                                <span class="input-group-addon" id="sizing-addon2">Token</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    @Html.CheckBoxFor(model => model.Data.IsAdmin, new { htmlAttributes = new { @class = "form-control" } })
+                                </span>
+                                <span class="form-control">
+                                    Admin
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    @Html.CheckBoxFor(model => model.Data.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                </span>
+                                <span class="form-control">
+                                    Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="btnUpdate" class="btn btn-sm btn-dark col-md-6" value="Change" onclick="@("window.location.href='" + @Url.Action("Edit", "Admin", new { Id = Model.Data.Id }) + "'");" />
+                            <input type="button" class="btn btn-sm btn-default col-md-6" value="Back" onclick="@("window.location.href='" + @Url.Action("Index", "Home") + "'");" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

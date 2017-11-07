@@ -1,0 +1,130 @@
+﻿@model App.Schedule.Web.Admin.Models.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    @if (Model != null && Model.HasError)
+    {
+        <div id="errorBox" class="alert alert-danger" role="alert">
+            <strong id="err_head">Error: </strong>
+            <span id="err_title">@Model.Error</span>
+            @if (Model.HasMore)
+            {
+                <button data-toggle="collapse" data-target="#moreError">More</button>
+                <div id="moreError" class="collapse">
+                    @Model.ErrorDescription
+                </div>
+            }
+        </div>
+    }
+    <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+        <strong id="err_head">Error: </strong>
+        <span id="err_title">Please try again later.</span>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="pnl-head">
+                Site Setup
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Admins</h3>
+                    <p>Total: @Model.AdminsCount</p>
+                </div>
+                <p><a href="@Url.Action("Index","Admin")" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Countries</h3>
+                    <p>Total: @Model.CountryCount</p>
+                </div>
+                <p><a href="@Url.Action("Index","Country")" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>TimeZones</h3>
+                    <p>Total: @Model.TimezonCount</p>
+                </div>
+                <p><a href="@Url.Action("Index","Timezone")" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Memberships</h3>
+                    <p>Total: @Model.MembershipCount</p>
+                </div>
+                <p><a href="@Url.Action("Index","Membership")" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Business Categories</h3>
+                    <p>Total: @Model.BusinessCategoryCount</p>
+                </div>
+                <p><a href="@Url.Action("Index","BusinessCategory")" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+
+        @*<div class="col-lg-12">
+            <div class="pnl-head">
+                Business Setup
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Businesses</h3>
+                    <p>Total: 0</p>
+                </div>
+                <p><a href="#" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Business Admins</h3>
+                    <p>Total: 0</p>
+                </div>
+                <p><a href="#" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Business Employees</h3>
+                    <p>Total: 0</p>
+                </div>
+                <p><a href="#" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Business Customers</h3>
+                    <p>Total: 0</p>
+                </div>
+                <p><a href="#" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail bg-dark">
+                <div class="caption">
+                    <h3>Appointments</h3>
+                    <p>Total: 0</p>
+                </div>
+                <p><a href="#" class="btn btn-block btn-dark" role="button"><span class="glyphicon glyphicon-menu-right"></span></a></p>
+            </div>
+        </div>*@
+    </div>
+</div>
+

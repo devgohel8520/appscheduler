@@ -34,28 +34,49 @@ namespace App.Schedule.WebApi.Controllers
         // GET: api/timezone/5
         public IHttpActionResult Get(long? id)
         {
+            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                {
+                    result.Status = false;
+                    result.Message = "Timezone id is required.";
+                }
                 else
                 {
                     var model = _db.tblTimezones.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                    {
+                        result.Status = true;
+                        result.Data = new TimezoneViewModel()
+                        {
+                            AdministratorId = model.AdministratorId,
+                            CountryId = model.CountryId,
+                            Id = model.Id,
+                            IsDST = model.IsDST,
+                            Title = model.Title,
+                            UtcOffset = model.UtcOffset
+                        };
+                    }
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                    {
+                        result.Status = false;
+                        result.Message = "Please provide a valid timezone id";
+                    }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                result.Status = false;
+                result.Message = "There was a problem. Please try again later.";
             }
+            return Ok(result);
         }
 
         // POST: api/timezone
         public IHttpActionResult Post([FromBody]TimezoneViewModel model)
         {
+            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
                 var timeZone = new tblTimezone()
@@ -69,23 +90,43 @@ namespace App.Schedule.WebApi.Controllers
                 _db.tblTimezones.Add(timeZone);
                 var response = _db.SaveChanges();
                 if (response > 0)
-                    return Ok(new { status = true, data = timeZone });
+                {
+                    result.Status = true;
+                    result.Data = new TimezoneViewModel()
+                    {
+                        AdministratorId = model.AdministratorId,
+                        CountryId = model.CountryId,
+                        Id = model.Id,
+                        IsDST = model.IsDST,
+                        Title = model.Title,
+                        UtcOffset = model.UtcOffset
+                    };
+                }
                 else
-                    return Ok(new { status = false, data = "There was a problem." });
+                {
+                    result.Status = false;
+                    result.Message = "There was a problem. Please try again later.";
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                result.Status = false;
+                result.Message = "There was a problem. Please try again later.";
             }
+            return Ok(result);
         }
 
         // PUT: api/timezone/5
         public IHttpActionResult Put(long? id, [FromBody]TimezoneViewModel model)
         {
+            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                {
+                    result.Status = false;
+                    result.Message = "Timezone id is required.";
+                }
                 else
                 {
                     var timeZone = _db.tblTimezones.Find(id);
@@ -100,51 +141,74 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(timeZone).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = timeZone });
+                        {
+                            result.Status = true;
+                            model.Id = timeZone.Id;
+                            result.Data = model;
+                        }
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                        {
+                            result.Status = false;
+                            result.Message = "There was a problem. Please try again later.";
+                        }
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        result.Status = false;
+                        result.Message = "There was a problem. Please try again later.";
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                result.Status = false;
+                result.Message = "There was a problem. Please try again later.";
             }
+            return Ok(result);
         }
 
         // DELETE: api/timeZone/5
         public IHttpActionResult Delete(int? id)
         {
+            var result = new ResponseViewModel<string>();
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                {
+                    result.Status = false;
+                    result.Message = "Timezone id is required.";
+                }
                 else
                 {
-                    var timeZone = _db.tblTimezones.Find(id);
-                    if (timeZone != null)
+                    var timezone = _db.tblTimezones.Find(id);
+                    if (timezone != null)
                     {
-                        _db.tblTimezones.Remove(timeZone);
+                        _db.tblTimezones.Remove(timezone);
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = "Successfully removed record." });
+                        {
+                            result.Status = true;
+                            result.Message = "Successfully removed.";
+                        }
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                        {
+                            result.Status = false;
+                            result.Message = "There was a problem. Please try again later.";
+                        }
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        result.Status = false;
+                        result.Message = "Please provide a valid timezone Id.";
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                result.Status = false;
+                result.Message = "ex: There was a problem. Please try again later.";
             }
+            return Ok(result);
         }
     }
 }

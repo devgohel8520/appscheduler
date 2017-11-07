@@ -23,11 +23,11 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 var model = _db.tblBusinessCategories.ToList();
-                return Ok(new { status = true, data = model });
+                return Ok(new { status = true, data = model, message = "success" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
             }
         }
 
@@ -37,19 +37,19 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                    return Ok(new { status = false, message = "Please provide a valid business category id.", data = "" });
                 else
                 {
                     var model = _db.tblBusinessCategories.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                        return Ok(new { status = true, message = "", data = model });
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                        return Ok(new { status = false, message = "Not found.", data = "" });
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
             }
         }
 
@@ -75,18 +75,18 @@ namespace App.Schedule.WebApi.Controllers
                     _db.tblBusinessCategories.Add(businessCategory);
                     var response = _db.SaveChanges();
                     if (response > 0)
-                        return Ok(new { status = true, data = businessCategory });
+                        return Ok(new { status = true, message = "success", data = businessCategory });
                     else
-                        return Ok(new { status = false, data = "There was a problem." });
+                        return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
                 }
                 else
                 {
-                    return Ok(new { status = false, data = "There was a problem." });
+                    return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
             }
         }
 
@@ -96,7 +96,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "Please provide a valid business category ID." });
                 else
                 {
                     var businessCategory = _db.tblBusinessCategories.Find(id);
@@ -114,19 +114,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(businessCategory).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = businessCategory });
+                            return Ok(new { status = true, message = "success", data = businessCategory });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, message = "There was a problem to update the data.", data = "" });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
             }
         }
 
@@ -136,7 +136,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "Please provide a valid business category ID." });
                 else
                 {
                     var businessCategory = _db.tblBusinessCategories.Find(id);
@@ -146,19 +146,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(businessCategory).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = businessCategory });
+                            return Ok(new { status = true, message = "success", data = businessCategory });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, message = "There was a problem to update the data.", data = "" });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id.", data = "" });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
             }
         }
     }

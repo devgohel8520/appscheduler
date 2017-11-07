@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-custom navbar-static-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index","Home")" style="margin-top:-5px;"><img alt="Brand" src="~/Content/Images/logo.png" width="30"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    @if (Session["HomeLink"] != null)
+                    {
+                        <li class="active"><a href="#" class="nav-a">@Session["HomeLink"]</a></li>
+                    }
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Setup <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Index","Dashboard")">Dashboard</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="@Url.Action("Index","Admin")">Admin</a></li>
+                            <li><a href="@Url.Action("Index","Country")">Country</a></li>
+                            <li><a href="@Url.Action("Index","Timezone")">TimeZone</a></li>
+                            <li><a href="@Url.Action("Index","Membership")">Membership</a></li>
+                            <li><a href="@Url.Action("Index","BusinessCategory")">Business Category</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Business</a></li>
+                            <li><a href="#">Business Admin</a></li>
+                            <li><a href="#">Business Employee</a></li>
+                            <li><a href="#">Business Customer</a></li>
+                            <li><a href="#">Appointment</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        @if (HttpContext.Current.Request.Cookies["aappointment"] != null)
+                        {
+                            var adminCookie = HttpContext.Current.Request.Cookies["aappointment"];
+                            if (adminCookie != null)
+                            {
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@adminCookie.Values["aFirstName"]  @adminCookie.Values["aLastName"] <span class="caret"></span></a>
+                            }
+                            else
+                            {
+                                Response.Redirect("~/Login/Index");
+                            }
+                        }
+                        else
+                        {
+                            Response.Redirect("~/Login/Index");
+                        }
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Index","AdminProfile")">Profile</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="@Url.Action("Logout","Login")">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

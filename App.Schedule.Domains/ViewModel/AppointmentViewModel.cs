@@ -8,21 +8,34 @@ namespace App.Schedule.Domains.ViewModel
     {
         public long Id { get; set; }
 
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter first name.")]
+        [MinLength(3, ErrorMessage = "FirstName should have atleast 3 character long")]
         public string FirstName { get; set; }
 
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter last name.")]
+        [MinLength(3, ErrorMessage = "LastName should have atleast 3 character long")]
         public string LastName { get; set; }
 
-        [Required]
-        [StringLength(250, MinimumLength = 8, ErrorMessage = "Please provide a valid login id")]
+        //[Required(ErrorMessage = "Please enter your email id.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email id")]
         public string LoginId { get; set; }
 
-        [Required]
-        [StringLength(250)]
+        [MinLength(8, ErrorMessage = "Password must be greater than 8 character")]
+        [MaxLength(50, ErrorMessage = "Password must be less than 50 character")]
+        public string OldPassword { get; set; }
+
+
+        [Required(ErrorMessage = "Please enter your password")]
+        [MinLength(8, ErrorMessage = "Password must be greater than 8 character")]
+        [MaxLength(50, ErrorMessage = "Password must be less than 50 character")]
         public string Password { get; set; }
 
-        [StringLength(250)]
+        [Compare("Password", ErrorMessage = "Please cheque your confirm password")]
+        public string ConfirmPassword { get; set; }
+
+
+        [Required(ErrorMessage = "Please enter your email id.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email id")]
         public string Email { get; set; }
 
         [StringLength(50)]
@@ -40,15 +53,21 @@ namespace App.Schedule.Domains.ViewModel
     public class CountryViewModel
     {
         public int Id { get; set; }
-
-        [Required]
+        
         [StringLength(250)]
+        [Required(ErrorMessage = "Please enter country name.")]
         public string Name { get; set; }
 
         [StringLength(10)]
+        [Required(ErrorMessage = "Please enter ISO 2.")]
+        [MinLength(2, ErrorMessage = "ISO2 should have 2 character long.")]
+        [MaxLength(2, ErrorMessage = "ISO2 should have 2 character only.")]
         public string ISO { get; set; }
 
         [StringLength(10)]
+        [Required(ErrorMessage = "Please enter ISO 3.")]
+        [MinLength(3, ErrorMessage = "ISO3 should have 3 character long.")]
+        [MaxLength(3, ErrorMessage = "ISO3 should have 3 character only.")]
         public string ISO3 { get; set; }
 
         [StringLength(50)]
@@ -57,7 +76,7 @@ namespace App.Schedule.Domains.ViewModel
         [StringLength(50)]
         public string CurrencyCode { get; set; }
 
-        public int PhoneCode { get; set; }
+        public int? PhoneCode { get; set; }
 
         public long AdministratorId { get; set; }
 
@@ -68,14 +87,16 @@ namespace App.Schedule.Domains.ViewModel
     {
         public int Id { get; set; }
 
-        [Required]
         [StringLength(250)]
+        [Required(ErrorMessage = "Please enter Timezone title.")]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "Please enter UTC offset.")]
         public int UtcOffset { get; set; }
 
         public bool IsDST { get; set; }
 
+        [Required(ErrorMessage = "Please enter country id.")]
         public int CountryId { get; set; }
 
         public long AdministratorId { get; set; }

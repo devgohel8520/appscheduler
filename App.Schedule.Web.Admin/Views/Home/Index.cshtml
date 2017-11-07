@@ -1,0 +1,32 @@
+﻿@model App.Schedule.Web.Admin.Models.ServiceDataViewModel<string>
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    @if (Model != null && Model.HasError)
+    {
+        <div id="errorBox" class="alert alert-danger" role="alert">
+            <strong id="err_head">Error: </strong>
+            <span id="err_title">@Model.Error</span>
+            @if (Model.HasMore)
+            {
+                <button data-toggle="collapse" data-target="#moreError">More</button>
+                <div id="moreError" class="collapse">
+                    @Model.ErrorDescription
+                </div>
+            }
+        </div>
+    }
+    <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+        <strong id="err_head">Error: </strong>
+        <span id="err_title">Please try again later.</span>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            
+        </div>
+    </div>
+</div>
+

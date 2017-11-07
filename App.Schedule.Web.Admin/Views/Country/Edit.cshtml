@@ -1,0 +1,97 @@
+﻿@model App.Schedule.Web.Admin.Models.ServiceDataViewModel<App.Schedule.Domains.ViewModel.CountryViewModel>
+@{
+    ViewBag.Title = "Edit Country";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        @if (Model != null && Model.HasError)
+        {
+            <div id="errorBox" class="alert alert-danger" role="alert">
+                <strong id="err_head">Error: </strong>
+                <span id="err_title">@Model.Error</span>
+                @if (Model.HasMore)
+                {
+                    <button data-toggle="collapse" data-target="#moreError">More</button>
+                    <div id="moreError" class="collapse">
+                        @Model.ErrorDescription
+                    </div>
+                }
+            </div>
+        }
+        <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+            <strong id="err_head">Error: </strong>
+            <span id="err_title">Please try again later.</span>
+        </div>
+
+        <div class="bg-box bg-bluegray">
+            @using (Ajax.BeginForm("Edit", new AjaxOptions { }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(d => d.Data.Id)
+                <div class="form-group input-group input-group-lg">
+                    <label class="input-lg input-group-addon">
+                        Edit Country
+                    </label>
+                </div>
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Country name" } })
+                                <span class="input-group-addon" id="sizing-addon2">Name</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.ISO, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter 2 character ISO name" } })
+                                <span class="input-group-addon" id="sizing-addon2">ISO2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.ISO3, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter 3 character ISO name" } })
+                                <span class="input-group-addon" id="sizing-addon2">ISO3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.CurrencyCode, new { htmlAttributes = new { @class = "form-control", placeholder = "Corrency Code" } })
+                                <span class="input-group-addon" id="sizing-addon2">Currency Code</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.CurrencyName, new { htmlAttributes = new { @class = "form-control", placeholder = "Currency Name" } })
+                                <span class="input-group-addon" id="sizing-addon2">Currency Name</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.PhoneCode, new { htmlAttributes = new { @class = "form-control", placeholder = "Phone Code" } })
+                                <span class="input-group-addon" id="sizing-addon2">Phone Code</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="btnEdit" type="button" value="Edit" onclick="onSubmit(this,'@Url.Action("Index","Country")');" class="btn btn-sm btn-dark col-md-6" />
+                            <input type="button" class="btn btn-sm btn-default col-md-6" value="Back" onclick="@("window.location.href='" + @Url.Action("Index", "Country") + "'");" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

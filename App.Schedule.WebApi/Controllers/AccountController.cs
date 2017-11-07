@@ -16,6 +16,8 @@ using Microsoft.Owin.Security.OAuth;
 using App.Schedule.WebApi.Models;
 using App.Schedule.WebApi.Providers;
 using App.Schedule.WebApi.Results;
+using App.Schedule.Domains.ViewModel;
+using System.Linq;
 
 namespace App.Schedule.WebApi.Controllers
 {
@@ -318,28 +320,7 @@ namespace App.Schedule.WebApi.Controllers
             return logins;
         }
 
-        // POST api/Account/Register
-        [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-
-            return Ok();
-        }
-
+       
         // POST api/Account/RegisterExternal
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -490,5 +471,151 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         #endregion
+
+        // POST api/Account/Register
+        [AllowAnonymous]
+        [Route("Register")]
+        public async Task<IHttpActionResult> Register(AdministratorViewModel model)
+        {
+            var result = new ResponseViewModel<AdministratorViewModel>();
+
+            if (!ModelState.IsValid)
+            {
+                var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
+                result.Status = false;
+                result.Message = errMessage;
+            }
+            string message = "";
+            var adminController = new AdministratorController();
+            var createStatus = adminController.RegisterAdmin(model, out message);
+            if (createStatus)
+            {
+                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+                var response = await UserManager.CreateAsync(user, model.Password);
+                if (response.Succeeded)
+                {
+                    result.Status = createStatus;
+                    result.Message = message;
+                }
+                else
+                {
+                    result.Status = false;
+                    result.Message = string.Join(", ", response.Errors);
+                }
+            }
+            else
+            {
+                //var findUser = UserManager.FindByEmail(model.Email);
+                //var findUserResult = await UserManager.DeleteAsync(findUser);
+                result.Status = false;
+                result.Message = message;
+            }
+            return Ok(result);
+        }
+
+
+        // POST api/Account/UpdateAdmin
+        [Route("UpdateAdmin")]
+        public async Task<IHttpActionResult> UpdateAdmin(AdministratorViewModel model)
+        {
+            var result = new ResponseViewModel<AdministratorViewModel>();
+            if (!ModelState.IsValid)
+            {
+                var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
+                result.Status = false;
+                result.Message = errMessage;
+            }
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            var response = await UserManager.ChangePasswordAsync(user.Id, model.OldPassword, model.Password);
+            if (response.Succeeded)
+            {
+                string message = "";
+                var adminController = new AdministratorController();
+                var updateStatus = adminController.UpdateAdmin(model, out message);
+                if (updateStatus)
+                {
+                    result.Status = updateStatus;
+                    result.Message = message;
+                }
+            }
+            else
+            {
+                result.Status = false;
+                result.Message = string.Join(", ", response.Errors).ToLower();
+                if (result.Message.Contains("incorrect password"))
+                    result.Message = "Please check your old password.";
+            }
+            return Ok(result);
+        }
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("SignIn")]
+        //public IHttpActionResult SignIn(string LoginId, string Password)
+        //{
+        //    var result = new ResponseViewModel<AdministratorViewModel>();
+        //    var claims = new List<Claim>();
+        //    try
+        //    {
+        //        if (!string.IsNullOrEmpty(LoginId) && !string.IsNullOrEmpty(Password))
+        //        {
+        //            claims.Add(new Claim(ClaimTypes.Name, LoginId));
+        //            var claimIdenties = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+        //            var ctx = Request.GetOwinContext();
+        //            var authenticationManager = ctx.Authentication;
+        //            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true }, claimIdenties);
+        //            result.Status = true;
+        //            result.Message = "Login in successfully.";
+        //            if (result.Status)
+        //            {
+        //                Password = HttpContext.Current.Server.UrlEncode(Password);
+        //                var adminController = new AdministratorController();
+        //                var adminInfo = adminController.GetAdminByLoginId(LoginId,Password);
+        //                if (adminInfo != null)
+        //                {
+        //                    result.Data = adminInfo;
+        //                }
+        //                else
+        //                {
+        //                    result.Status = false;
+        //                    result.Message = "Email id and password incorrect or you are not active user.";
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            result.Status = false;
+        //            result.Message = "Please provide login credential.";
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        result.Status = false;
+        //        result.Message = "There was a problem. please try again later.";
+        //    }
+        //    return Ok(result);
+        //}
+
+        //[HttpGet]
+        //[Route("SignOut")]
+        //public IHttpActionResult SignOut()
+        //{
+        //    var result = new ResponseViewModel<AdministratorViewModel>();
+        //    try
+        //    {
+        //        var ctx = Request.GetOwinContext();
+        //        var authenticationManager = ctx.Authentication;
+        //        authenticationManager.SignOut();
+        //        result.Status = true;
+        //        result.Message = "Louout successfully.";
+        //    }
+        //    catch
+        //    {
+        //        result.Status = false;
+        //        result.Message = "There was a problem. please try again later.";
+        //    }
+        //    return Ok(result);
+        //}
     }
 }
