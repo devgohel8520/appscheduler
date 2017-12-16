@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace App.Schedule.Domains.ViewModel
 {
+    /// <summary>
+    /// Class is used to hold response information.
+    /// </summary>
+    /// <typeparam name="T">Any data type to get data values.</typeparam>
     public class ResponseViewModel<T>
     {
         public bool Status { get; set; }
@@ -9,14 +12,14 @@ namespace App.Schedule.Domains.ViewModel
         public string Message { get; set; }
     }
 
-    public class ModelState
-    {
-        public List<string> Message { get; set; }
-    }
+    //public class ModelState
+    //{
+    //    public List<string> Message { get; set; }
+    //}
 
-    public class AspIdentityModelStateViewModel
-    {
-        public string Message { get; set; }
-        public ModelState ModelState { get; set; }
-    }
+    //public class AspIdentityModelStateViewModel
+    //{
+    //    public string Message { get; set; }
+    //    public ModelState ModelState { get; set; }
+    //}
 }

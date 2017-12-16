@@ -18,16 +18,17 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         // GET: api/businesscategory
+        [AllowAnonymous]
         public IHttpActionResult Get()
         {
             try
             {
                 var model = _db.tblBusinessCategories.ToList();
-                return Ok(new { status = true, data = model, message = "success" });
+                return Ok(new { status = true, data = model, message = "Transaction successed." });
             }
             catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -37,19 +38,19 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, message = "Please provide a valid business category id.", data = "" });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid business category id." });
                 else
                 {
                     var model = _db.tblBusinessCategories.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, message = "", data = model });
+                        return Ok(new { status = true, data = model, message = "Transaction successed." });
                     else
-                        return Ok(new { status = false, message = "Not found.", data = "" });
+                        return Ok(new { status = false, data = model, message = "Not found." });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -75,18 +76,18 @@ namespace App.Schedule.WebApi.Controllers
                     _db.tblBusinessCategories.Add(businessCategory);
                     var response = _db.SaveChanges();
                     if (response > 0)
-                        return Ok(new { status = true, message = "success", data = businessCategory });
+                        return Ok(new { status = true, data = businessCategory, message = "Transaction successed." });
                     else
-                        return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                        return Ok(new { status = false, data = "", message = "Transaction failed." });
                 }
                 else
                 {
-                    return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid information." });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -96,7 +97,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid business category ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid business category id." });
                 else
                 {
                     var businessCategory = _db.tblBusinessCategories.Find(id);
@@ -114,19 +115,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(businessCategory).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, message = "success", data = businessCategory });
+                            return Ok(new { status = true, data = businessCategory, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, message = "There was a problem to update the data.", data = "" });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid information." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -136,7 +137,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid business category ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid business category id." });
                 else
                 {
                     var businessCategory = _db.tblBusinessCategories.Find(id);
@@ -146,9 +147,9 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(businessCategory).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, message = "success", data = businessCategory });
+                            return Ok(new { status = true, data = businessCategory, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, message = "There was a problem to update the data.", data = "" });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
@@ -158,7 +159,7 @@ namespace App.Schedule.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
     }

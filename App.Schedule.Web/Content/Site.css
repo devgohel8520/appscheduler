@@ -1,24 +1,141 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    background-color: #FCF7F8;
+}
+/*padding */
+.padd60 {
+    padding-top: 60px;
+}
+.pad10 {
+    padding-top: 10px;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.pad20 {
+    padding-top: 20px;
+}
+/*end padding*/
+/*margin*/
+.margin10 {
+    margin-top: 10px;
+}
+.margin20 {
+    margin-top: 20px;
+}
+/*end margin*/
+.bga-fullscreen {
+    height: calc(100vh - 52px);
+}
+.navbar {
+    margin-bottom: 0px;
+    border-radius: 0;
+}
+.navbar-toggle .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color:black;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+.nav .dropdown > a:hover,
+.nav .dropdown > a:focus {
+    background-color: black;
+    border-color: transparent;
+} 
+.white-text {
+    color: #FFFFFF;
 }
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.white-grey-text {
+    color: #105e46;
+}
+.navbar-default {
+    background: #FFFFFF;
+}
+.bga-transparent {
+    background-color: transparent;
+}
+.bga-primary {
+    background-color: #008975;
+}
+.bga-secondary {
+    background-color: #00AA8D;
+}
+.bga-primary-text {
+    background-color: #CDE3EB;
+}
+.bga-secondary-text {
+    background-color: #E3EFF3;
+}
+.bg-green-ap {
+    background-color: #57C78B;
+}
+/*scrollbar*/
+body::-webkit-scrollbar {
+    width: 0.5em;
+}
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+body::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+}
+.absolute-center {
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+/*end scrollbar*/
+/*center login*/
+.absolute-center.is-center {
+    width: 50%;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 10px;
+    color: #FFFFFF;
+    background-color: rgba(0, 82, 79, 0.5);
+}
+.absolute-center.is-login-check {
+    height: 250px;
+}
+.absolute-center.is-login {
+    height: 320px;
+}
+.absolute-center.is-forgot {
+    height: 240px;
+}
+.logo-container {
+    padding: 20px;
+    text-align: center;
+    font-size: 2em;
+}
+.is-center a {
+    color: white;
+}
+.is-center a:hover,
+a:active {
+    color: #d1d1d1;
+    text-decoration: none;
+}
+.absolute-center .bga-footer {
+    position: absolute;
+    bottom: -30px;
+    text-align: center;
+}
+/*end center login*/
+.link-text a {
+    color: #FFFFFF;
+}
+.link-text a:active,
+hover {
+    color: #FFFFFF;
+}
+.border-left {
+    border-left: 1px solid #D7D7D7;
+}
+.middle-layout {
+    background-color: #ffffff;
+    border: 1px solid #f5f5f5;
 }

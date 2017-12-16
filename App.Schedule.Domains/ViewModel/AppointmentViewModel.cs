@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace App.Schedule.Domains.ViewModel
 {
+    /// <summary>
+    /// Class is used to hold administrator information.
+    /// </summary>
     public class AdministratorViewModel
     {
         public long Id { get; set; }
@@ -50,6 +53,9 @@ namespace App.Schedule.Domains.ViewModel
         public long AdministratorId { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold  country information.
+    /// </summary>
     public class CountryViewModel
     {
         public int Id { get; set; }
@@ -83,6 +89,9 @@ namespace App.Schedule.Domains.ViewModel
         //public List<tblServiceLocation> tblServiceLocations { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold timezone information.
+    /// </summary>
     public class TimezoneViewModel
     {
         public int Id { get; set; }
@@ -113,6 +122,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual ICollection<tblServiceLocation> tblServiceLocations { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business category information.
+    /// </summary>
     public class BusinessCategoryViewModel
     {
         public int Id { get; set; }
@@ -147,6 +159,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblBusinessCategory tblBusinessCategory2 { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold membership information.
+    /// </summary>
     public class MembershipViewModel
     {
         public int Id { get; set; }
@@ -188,6 +203,9 @@ namespace App.Schedule.Domains.ViewModel
 
     }
 
+    /// <summary>
+    /// Class is used to hold business information.
+    /// </summary>
     public class BusinessViewModel
     {
         public long Id { get; set; }
@@ -243,29 +261,33 @@ namespace App.Schedule.Domains.ViewModel
 
         public int TimezoneId { get; set; }
 
-        //public virtual tblTimezone tblTimezone { get; set; }
+        public virtual TimezoneViewModel tblTimezone { get; set; }
 
-        //public virtual tblMembership tblMembership { get; set; }
+        public virtual MembershipViewModel tblMembership { get; set; }
 
-        //public virtual tblBusinessCategory tblBusinessCategory { get; set; }
+        public virtual BusinessCategoryViewModel tblBusinessCategory { get; set; }
 
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         //public virtual ICollection<tblServiceLocation> tblServiceLocations { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business employee information.
+    /// </summary>
     public class BusinessEmployeeViewModel
     {
         public long Id { get; set; }
 
-        [Required]
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter first name.")]
+        [MinLength(3, ErrorMessage = "FirstName should have atleast 3 character long")]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter last name.")]
+        [MinLength(3, ErrorMessage = "LastName should have atleast 3 character long")]
         public string LastName { get; set; }
 
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter your email id.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email id")]
         public string Email { get; set; }
 
         public int? STD { get; set; }
@@ -273,13 +295,21 @@ namespace App.Schedule.Domains.ViewModel
         [StringLength(250)]
         public string PhoneNumber { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(250)]
         public string LoginId { get; set; }
 
-        [Required]
-        [StringLength(250)]
+        [Required(ErrorMessage = "Please enter your password")]
+        [MinLength(8, ErrorMessage = "Password must be greater than 8 character")]
+        [MaxLength(50, ErrorMessage = "Password must be less than 50 character")]
         public string Password { get; set; }
+
+        [Compare("Password", ErrorMessage = "Please cheque your confirm password")]
+        public string ConfirmPassword { get; set; }
+
+        [MinLength(8, ErrorMessage = "Password must be greater than 8 character")]
+        [MaxLength(50, ErrorMessage = "Password must be less than 50 character")]
+        public string OldPassword { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -304,6 +334,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual ICollection<tblBusinessService> tblBusinessServices { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold service location of business information.
+    /// </summary>
     public class ServiceLocationViewModel
     {
         public long Id { get; set; }
@@ -364,6 +397,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblTimezone tblTimezone { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business hour information.
+    /// </summary>
     public class BusinessHourViewModel
     {
         public long Id { get; set; }
@@ -401,6 +437,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblServiceLocation tblServiceLocation { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business holiday information.
+    /// </summary>
     public class BusinessHolidayViewModel
     {
         public long Id { get; set; }
@@ -415,6 +454,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblServiceLocation tblServiceLocation { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business offer information.
+    /// </summary>
     public class BusinessOfferViewModel
     {
         public long Id { get; set; }
@@ -450,6 +492,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual ICollection<tblBusinessOfferServiceLocation> tblBusinessOfferServiceLocations { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business service information
+    /// </summary>
     public class BusinessServiceViewModel
     {
         public long Id { get; set; }
@@ -475,6 +520,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblBusinessEmployee tblBusinessEmployee { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold business customer information.
+    /// </summary>
     public class BusinessCustomerViewMdoel
     {
         public long Id { get; set; }
@@ -540,6 +588,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblServiceLocation tblServiceLocation { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold appointment information.
+    /// </summary>
     public class AppointmentViewModel
     {
         public long Id { get; set; }
@@ -606,6 +657,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual ICollection<tblAppointmentInvitee> tblAppointmentInvitees { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold appointment invitee information.
+    /// </summary>
     public class AppointmentInviteeViewModel
     {
         public long Id { get; set; }
@@ -619,6 +673,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblBusinessEmployee tblBusinessEmployee { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold appointment payment information.
+    /// </summary>
     public class AppointmentPaymentViewModel
     {
         public long Id { get; set; }
@@ -661,6 +718,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblAppointment tblAppointment { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold appointment feedback information.
+    /// </summary>
     public class AppointmentFeedbackViewModel
     {
         public long Id { get; set; }
@@ -689,6 +749,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblBusinessEmployee tblBusinessEmployee { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold document category information.
+    /// </summary>
     public class DocumentCategoryViewModel
     {
         public long Id { get; set; }
@@ -720,6 +783,9 @@ namespace App.Schedule.Domains.ViewModel
         //public virtual tblDocumentCategory tblDocumentCategory2 { get; set; }
     }
 
+    /// <summary>
+    /// Class is used to hold appointment document information.
+    /// </summary>
     public class AppointmentDocumentViewModel
     {
         public long Id { get; set; }
@@ -742,6 +808,9 @@ namespace App.Schedule.Domains.ViewModel
     }
 
     //All Enum Types fro Appointment Scheduler
+    /// <summary>
+    /// Enum is used to set Address type.
+    /// </summary>
     public enum AddressType
     {
         Business = 1,
@@ -749,6 +818,9 @@ namespace App.Schedule.Domains.ViewModel
         Other = 3
     }
 
+    /// <summary>
+    /// Enum is used to set Billing type.
+    /// </summary>
     public enum BillingType
     {
         Cash = 1,
@@ -757,6 +829,9 @@ namespace App.Schedule.Domains.ViewModel
         Account = 4
     }
 
+    /// <summary>
+    /// Enum is used to set card type.
+    /// </summary>
     public enum CardType
     {
         AmericanExpress = 1,
@@ -765,17 +840,37 @@ namespace App.Schedule.Domains.ViewModel
         Visa = 4
     }
 
+    /// <summary>
+    /// Enum is used to set day type.
+    /// </summary>
     public enum DayType
     {
-        Sun = 1,
-        Mon = 2,
-        Tue = 3,
-        Wed = 4,
-        Thu = 5,
-        Fri = 6,
-        Sat = 7
+        Sun = 0,
+        Mon = 1,
+        Tue = 2,
+        Wed = 3,
+        Thu = 4,
+        Fri = 5,
+        Sat = 6
     }
 
+    /// <summary>
+    /// Enum is used to set day full name type. 
+    /// </summary>
+    public enum DayFullType
+    {
+        Sunday = 0,
+        Monday = 1,
+        Tuesday = 2,
+        Wednesday = 3,
+        Thursday = 4,
+        Friday = 5,
+        Saturday = 6
+    }
+
+    /// <summary>
+    /// Enum is used to set phone number type.
+    /// </summary>
     public enum PhoneNumberType
     {
         Assistant = 1,
@@ -799,6 +894,9 @@ namespace App.Schedule.Domains.ViewModel
         TtyTdd = 19
     }
 
+    /// <summary>
+    /// Enum is used to set status type.
+    /// </summary>
     public enum StatusType
     {
         Confirmed = 0,
@@ -809,6 +907,9 @@ namespace App.Schedule.Domains.ViewModel
         NotAttended = 5
     }
 
+    /// <summary>
+    /// Enum is used to set pattern type.
+    /// </summary>
     public enum PatternType
     {
         Once = 0,
@@ -819,6 +920,9 @@ namespace App.Schedule.Domains.ViewModel
         Custom = 5
     }
 
+    /// <summary>
+    /// Enum is used to set holiday type.
+    /// </summary>
     public enum HolidayType
     {
         Specified = 0,
@@ -827,6 +931,9 @@ namespace App.Schedule.Domains.ViewModel
         RepeatEveryYear = 4,
     }
 
+    /// <summary>
+    /// Enum is used to set file type.
+    /// </summary>
     public enum FileType
     {
         Image = 0,
@@ -836,6 +943,9 @@ namespace App.Schedule.Domains.ViewModel
         Excel = 4
     }
 
+    /// <summary>
+    /// Enum is used to set document type.
+    /// </summary>
     public enum DocumentType
     {
         Image = 0,

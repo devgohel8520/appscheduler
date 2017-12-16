@@ -1,7 +1,5 @@
-﻿using App.Schedule.Domains.ViewModel;
-using App.Schedule.Services;
-using App.Schedule.Web.Admin.Models;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.Web.Admin.Controllers
 {

@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_NotAuthLayout.cshtml";
+}
+
+<div class="absolute-center is-center is-login-check">
+    <div class="logo-container">User Login</div>
+    <div class="col-sm-12 col-md-10 col-md-offset-1">
+        <div class="form-group">
+            <a type="button" class="btn btn-def btn-block bga-primary" href="@Url.Action("Login","Home", new { area = "Admin" })">Admin Login</a>
+        </div>
+        <div class="form-group">
+            <a type="button" class="btn btn-def btn-block bga-secondary" href="@Url.Action("Login","Home", new { area = "Employee" } )">Employee Login</a>
+        </div>
+        <div class="form-group">
+            <a type="button" class="btn btn-def btn-block bga-primary" href="@Url.Action("Login","Home", new { area = "Customer" })">Customer Login</a>
+        </div>
+    </div>
+    <div class="bga-footer col-sm-12 col-md-10 col-md-offset-1">
+        &copy; @DateTime.Now.Year.ToString() Copyright Ap.
+    </div>
+</div>

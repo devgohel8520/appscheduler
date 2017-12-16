@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Billing";
+    Layout = "~/Views/Shared/_AfterLoginMaster.cshtml";
+}
+<ul class="nav nav-tabs">
+    <li><a href="@Url.Action("Index","Account",new { area = "admin"})">Account Profile</a></li>
+    <li><a href="@Url.Action("Administrator","Account",new { area = "admin"})">Administrator</a></li>
+    <li><a href="@Url.Action("Membership","Account",new { area = "admin"})">Membership</a></li>
+    <li class="active"><a href="@Url.Action("Billing","Account",new { area = "admin"})">Billing</a></li>
+</ul>
+<div class="tab-content" style="padding:0px 10px;">
+    <div id="home" class="tab-pane fade in active">
+        <div class="alert alert-success margin10">We accept credit and debit card.</div>
+    </div>
+</div>

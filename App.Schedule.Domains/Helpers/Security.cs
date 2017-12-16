@@ -8,12 +8,21 @@ using System.Threading.Tasks;
 
 namespace App.Schedule.Domains.Helpers
 {
+    /// <summary>
+    /// Security class is used for encrypt and decrypt text with hashing format.
+    /// </summary>
     public static class Security
     {
-        public static string Encrypt(string toEncrypt, bool useHashing)
+        /// <summary>
+        /// To encrypt text with or without hashing.
+        /// </summary>
+        /// <param name="text">string or text to encrypt.</param>
+        /// <param name="useHashing">set true for hashing encryption.</param>
+        /// <returns></returns>
+        public static string Encrypt(string text, bool useHashing)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
+            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(text);
             var settingsReader = new AppSettingsReader();
             string key = "ezzmonty";
 
@@ -37,10 +46,16 @@ namespace App.Schedule.Domains.Helpers
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
 
-        public static string Decrypt(string cipherString, bool useHashing)
+        /// <summary>
+        /// To decrypt text with or without hashing.
+        /// </summary>
+        /// <param name="text">text or string to decrypt.</param>
+        /// <param name="useHashing">set true for hasing decryption.</param>
+        /// <returns></returns>
+        public static string Decrypt(string text, bool useHashing)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = Convert.FromBase64String(cipherString);
+            byte[] toEncryptArray = Convert.FromBase64String(text);
             var settingsReader = new AppSettingsReader();
             string key = "ezzmonty";
 

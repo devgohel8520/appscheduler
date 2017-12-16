@@ -1,10 +1,11 @@
-﻿using App.Schedule.Context;
-using App.Schedule.Domains;
-using App.Schedule.Domains.ViewModel;
-using System;
-using System.Data.Entity;
+﻿using System;
 using System.Linq;
 using System.Web.Http;
+using System.Data.Entity;
+using App.Schedule.Context;
+using App.Schedule.Domains;
+using System.Collections.Generic;
+using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.WebApi.Controllers
 {
@@ -18,16 +19,24 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         // GET: api/businesshour
-        public IHttpActionResult Get()
+        public IHttpActionResult Get(long? id, TableType type)
         {
             try
             {
-                var model = _db.tblBusinessHours.ToList();
-                return Ok(new { status = true, data = model });
+                var model = new List<tblBusinessHour>();
+                if (type == TableType.None)
+                {
+                    model = _db.tblBusinessHours.ToList();
+                }
+                else if (type == TableType.ServiceLocationId)
+                {
+                    model = _db.tblBusinessHours.Where(d => d.ServiceLocationId == id).ToList();
+                }
+                return Ok(new { status = true, data = model, message = "success" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -37,19 +46,19 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide valid ID." });
                 else
                 {
                     var model = _db.tblBusinessHours.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                        return Ok(new { status = true, data = model, message = "success" });
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                        return Ok(new { status = false, data = "", message = "Record not found." });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -78,18 +87,18 @@ namespace App.Schedule.WebApi.Controllers
                     _db.tblBusinessHours.Add(businessHour);
                     var response = _db.SaveChanges();
                     if (response > 0)
-                        return Ok(new { status = true, data = businessHour });
+                        return Ok(new { status = true, data = businessHour, message = "success" });
                     else
-                        return Ok(new { status = false, data = "There was a problem." });
+                        return Ok(new { status = false, data = "", message = "There was a problem." });
                 }
                 else
                 {
-                    return Ok(new { status = false, data = "Please enter a valid information." });
+                    return Ok(new { status = false, data = "", message = "Please enter a valid information." });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -99,9 +108,18 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid ID." });
                 else
                 {
+                    if (model.IsStartDay)
+                    {
+                        var hasStartDay = _db.tblBusinessHours.Any(d => d.ServiceLocationId == model.ServiceLocationId && d.IsStartDay == true && d.Id != model.Id);
+                        if (hasStartDay)
+                        {
+                            return Ok(new { status = false, data = "", message = "You can not set start day more than one." });
+                        }
+                    }
+
                     var businessHour = _db.tblBusinessHours.Find(id);
                     if (businessHour != null)
                     {
@@ -121,19 +139,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(businessHour).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = businessHour });
+                            return Ok(new { status = true, data = businessHour, message = "success" });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, data = "", message = "There was a problem to update the data." });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -143,7 +161,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid ID." });
                 else
                 {
                     var businessHour = _db.tblBusinessHours.Find(id);
@@ -152,19 +170,57 @@ namespace App.Schedule.WebApi.Controllers
                         _db.tblBusinessHours.Remove(businessHour);
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = "Successfully removed." });
+                            return Ok(new { status = true, data = "", message = "Successfully removed." });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, data = "", message = "There was a problem to update the data." });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
+            }
+        }
+
+        /// <summary>
+        /// Set up new business default hours for weekday.
+        /// </summary>
+        /// <returns></returns>
+        [NonAction]
+        public int SetupBusinessHours(long serviceLocationId)
+        {
+            try
+            {
+                var today = DateTime.Now;
+                var date = new DateTime(today.Year, today.Month, today.Day, 8, 00, 00, DateTimeKind.Utc);
+                for (int i = 0; i < 7; i++)
+                {
+                    var businessHour = new tblBusinessHour()
+                    {
+                        WeekDayId = i,
+                        IsStartDay = i == 0 ? true : false,
+                        IsHoliday = false,
+                        From = date,
+                        To = date.AddHours(10),
+                        IsSplit1 = false,
+                        FromSplit1 = null,
+                        ToSplit1 = null,
+                        IsSplit2 = false,
+                        FromSplit2 = null,
+                        ToSplit2 = null,
+                        ServiceLocationId = serviceLocationId
+                    };
+                    _db.tblBusinessHours.Add(businessHour);
+                }
+                return _db.SaveChanges();
+            }
+            catch
+            {
+                return 0;
             }
         }
     }

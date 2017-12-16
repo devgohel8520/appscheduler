@@ -9,6 +9,19 @@ namespace App.Schedule.Web.Admin.Controllers
 {
     public class DashboardController : AdminBaseController
     {
+        public ActionResult Logout()
+        {
+            if (Request.Cookies["aappointment"] != null)
+            {
+                var admin = new HttpCookie("aappointment");
+                Session["aEmail"] = "";
+                admin.Expires = DateTime.Now.AddDays(-1d);
+                Response.Cookies.Add(admin);
+                return RedirectToAction("Index", "Login");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         public async Task<ActionResult> Index()
         {
             var model = new DashboardViewModel();

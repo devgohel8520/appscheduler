@@ -1,0 +1,71 @@
+﻿@model App.Schedule.Domains.ViewModel.ServiceDataViewModel<App.Schedule.Domains.ViewModel.BusinessCategoryViewModel>
+@{
+    ViewBag.Title = "Deactive Business Sub Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        @if (Model != null && Model.HasError)
+        {
+            <div id="errorBox" class="alert alert-danger" role="alert">
+                <strong id="err_head">Error: </strong>
+                <span id="err_title">@Model.Error</span>
+                @if (Model.HasMore)
+                {
+                    <button data-toggle="collapse" data-target="#moreError">More</button>
+                    <div id="moreError" class="collapse">
+                        @Model.ErrorDescription
+                    </div>
+                }
+            </div>
+        }
+        <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+            <strong id="err_head">Error: </strong>
+            <span id="err_title">Please try again later.</span>
+        </div>
+
+        <div class="bg-box bg-bluegray">
+            @using (Ajax.BeginForm("SubDeactive", new AjaxOptions { }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(d => d.Data.Id)
+                @Html.HiddenFor(d => d.Data.ParentId)
+                @Html.HiddenFor(d => d.Data.AdministratorId)
+                <div class="form-group input-group input-group-lg">
+                    <label class="input-lg input-group-addon">
+                        Are you sure want to deactive?
+                    </label>
+                </div>
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Title" } })
+                                <span class="input-group-addon" id="sizing-addon2">Name</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    @Html.CheckBoxFor(model => model.Data.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                </span>
+                                <span class="form-control">
+                                    Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="btnRemove" type="button" value="Deactive" onclick="onSubmit(this,'@Url.Action("SubIndex", "BusinessCategory", new { id = Model.Data.ParentId })');" class="btn btn-sm btn-danger col-md-6" />
+                            <input type="button" class="btn btn-sm btn-default col-md-6" value="Back" onclick="@("window.location.href='" + @Url.Action("SubIndex", "BusinessCategory", new { id = Model.Data.ParentId }) + "'");" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

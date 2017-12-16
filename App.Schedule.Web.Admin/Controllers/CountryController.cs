@@ -3,7 +3,6 @@ using PagedList;
 using System.Linq;
 using System.Web.Mvc;
 using System.Threading.Tasks;
-using App.Schedule.Web.Admin.Models;
 using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.Web.Admin.Controllers
@@ -19,7 +18,7 @@ namespace App.Schedule.Web.Admin.Controllers
                 var pageNumber = page ?? 1;
                 ViewBag.search = search;
 
-                var response = await countryService.GetCountries();
+                var response = await countryService.Gets();
                 if (response.Status)
                 {
                     var data = response.Data;
@@ -70,10 +69,10 @@ namespace App.Schedule.Web.Admin.Controllers
             else
             {
                 model.Data.AdministratorId = admin.Id;
-                var response = await this.countryService.PostCountry(model.Data);
-                if (response.Status)
+                var response = await this.countryService.Add(model.Data);
+                if (response != null)
                 {
-                    result.Status = true;
+                    result.Status = response.Status;
                     result.Message = response.Message;
                 }
                 else
@@ -98,7 +97,7 @@ namespace App.Schedule.Web.Admin.Controllers
                 }
                 else
                 {
-                    var res = await this.countryService.GetCountryById(id.Value);
+                    var res = await this.countryService.Get(id.Value);
                     if (res.Status)
                     {
                         model.HasError = false;
@@ -134,7 +133,7 @@ namespace App.Schedule.Web.Admin.Controllers
                 else
                 {
                     model.Data.AdministratorId = admin.Id;
-                    var response = await this.countryService.PutCountry(model.Data);
+                    var response = await this.countryService.Update(model.Data);
                     if (response.Status)
                     {
                         result.Status = true;
@@ -168,7 +167,7 @@ namespace App.Schedule.Web.Admin.Controllers
                 }
                 else
                 {
-                    var res = await this.countryService.GetCountryById(id.Value);
+                    var res = await this.countryService.Get(id.Value);
                     if (res.Status)
                     {
                         model.HasError = false;
@@ -195,7 +194,7 @@ namespace App.Schedule.Web.Admin.Controllers
             var result = new ResponseViewModel<CountryViewModel>();
             try
             {
-                var response = await this.countryService.DeleteCountry(model.Data.Id);
+                var response = await this.countryService.Delete(model.Data.Id);
                 if (response.Status)
                 {
                     result.Status = true;

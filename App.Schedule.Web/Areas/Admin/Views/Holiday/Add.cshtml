@@ -1,0 +1,81 @@
+﻿@using App.Schedule.Domains.ViewModel;
+@model ResponseViewModel<BusinessHolidayViewModel>
+
+@{
+    ViewBag.Title = "Add Business Holiday";
+    Layout = "~/Views/Shared/_AfterLoginMaster.cshtml";
+}
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="@Url.Action("index", "holiday", new { area = "admin" })">Business Holiday Setup</a></li>
+</ul>
+<div class="tab-content" style="padding:0px 10px;">
+    <div class="tab-pane active">
+        <div class="col-lg-12 margin10">
+            <div class="row">
+                @{
+                    if (Model != null)
+                    {
+                        if (!Model.Status)
+                        {
+                            <div id="errorBox" class="alert alert-danger" role="alert">
+                                <strong id="err_head">Error: </strong>
+                                <span id="err_title">@Model.Message</span>
+                            </div>
+                        }
+                        if (Model.Data != null)
+                        {
+                            using (Ajax.BeginForm("add", "holiday", new AjaxOptions { }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(d => d.Data.ServiceLocationId)
+                                <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+                                    <strong id="err_head">Error: </strong>
+                                    <span id="err_title">Please try again later.</span>
+                                </div>
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td class="text-right">Date</td>
+                                        <td>
+                                            <div class="col-lg-6">@Html.EditorFor(d => d.Data.OnDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "MM/DD/YYYY", @value = "", @type = "date" } })</div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-right">
+                                            Type
+                                        </td>
+                                        <td>
+                                            <div class="col-lg-6">
+                                                @Html.DropDownListFor(d => d.Data.Type, new SelectList(ViewBag.HolidayType, "Value", "Text"), new { @class = "form-control" })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right"></td>
+                                        <td>
+                                            <div class="col-lg-12">
+                                                <button onclick="onSubmit(this,'@Url.Action("index", "holiday", new { area = "admin" })')" class="btn btn-info">Add</button>
+                                                <a href="@Url.Action("index", "holiday", new { area = "admin" })" class="btn btn-default" style="margin-left:10px;">Back</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                        }
+                        else
+                        {
+                            <text>Please check record.</text>
+                            <a href="@Url.Action("index", "accountsetup", new { area = "admin" })" class="btn btn-default col-lg-4" style="margin-left:10px;">Account Setup</a>
+                        }
+                    }
+                    else
+                    {
+                        <text>Please check record.</text>
+                        <a href="@Url.Action("index", "accountsetup", new { area = "admin" })" class="btn btn-default col-lg-4" style="margin-left:10px;">Account Setup</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

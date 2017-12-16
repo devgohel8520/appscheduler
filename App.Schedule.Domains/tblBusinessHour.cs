@@ -16,26 +16,20 @@ namespace App.Schedule.Domains
 
         public bool IsHoliday { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime From { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime To { get; set; }
 
         public bool? IsSplit1 { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime? FromSplit1 { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime? ToSplit1 { get; set; }
 
         public bool? IsSplit2 { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime? FromSplit2 { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime? ToSplit2 { get; set; }
 
         public long? ServiceLocationId { get; set; }

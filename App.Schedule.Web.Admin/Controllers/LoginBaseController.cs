@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace App.Schedule.Web.Admin.Controllers
 {
@@ -10,7 +6,17 @@ namespace App.Schedule.Web.Admin.Controllers
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            LoginStatus();
+            try
+            {
+                if (LoginStatus())
+                {
+                    filterContext.Result = RedirectToAction("Index", "Dashboard");
+                }
+            }
+            catch
+            {
+
+            }
         }
     }
 }

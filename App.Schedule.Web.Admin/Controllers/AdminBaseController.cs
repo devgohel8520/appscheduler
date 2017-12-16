@@ -8,9 +8,9 @@ namespace App.Schedule.Web.Admin.Controllers
 {
     public class AdminBaseController : Controller
     {
+        protected string token;
         protected AdministratorViewModel admin;
         protected AdminService adminService;
-        protected RegisterService registerService;
         protected DashboardService dashboardService;
         protected CountryService countryService;
         protected TimezoneService timezoneService;
@@ -18,7 +18,6 @@ namespace App.Schedule.Web.Admin.Controllers
         protected BusinessCategoryService businessCategoryService;
 
         protected HttpCookie adminCookie;
-        protected string token;
 
         public AdminBaseController()
         {
@@ -95,7 +94,6 @@ namespace App.Schedule.Web.Admin.Controllers
             {
                 admin = GetAdminSession();
                 this.adminService = new AdminService(token);
-                this.registerService = new RegisterService(token);
                 this.dashboardService = new DashboardService(token);
                 this.countryService = new CountryService(token);
                 this.timezoneService = new TimezoneService(token);

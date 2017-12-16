@@ -26,11 +26,11 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 var model = _db.tblAdministrators.ToList();
-                return Ok(new { status = true, message = "success", data = model });
+                return Ok(new { status = true, data = model, message = "Transaction successed." });
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -41,19 +41,19 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var model = _db.tblAdministrators.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                        return Ok(new { status = true, data = model, message = "Transaction successed." });
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                        return Ok(new { status = false, data = "", message = "Not found." });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -74,18 +74,16 @@ namespace App.Schedule.WebApi.Controllers
                 }
                 else
                 {
-                    return Ok(new { status = false, data = model, message = "No a Valid credential" });
+                    return Ok(new { status = false, data = model, message = "Not a valid credential" });
                 }
-                //return Ok(new { status = status, data = status == true ? "valid credential" : "Not a valid credential" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Ok(new { status = false, data = "", message = "ex: "  + ex.Message.ToString()});
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
         // POST: api/administrator
-        [AllowAnonymous]
         public IHttpActionResult Post([FromBody]AdministratorViewModel model)
         {
             try
@@ -93,12 +91,12 @@ namespace App.Schedule.WebApi.Controllers
                 if (!ModelState.IsValid)
                 {
                     var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
-                    return Ok(new { status = false, message = errMessage , data = "" });
+                    return Ok(new { status = false, data = "", message = errMessage });
                 }
 
                 var isAny = _db.tblAdministrators.Any(d => d.Email.ToLower() == model.Email.ToLower());
                 if (isAny)
-                    return Ok(new { status = false, message = "Please try another email id.", data="" });
+                    return Ok(new { status = false, data = "", message = "Please try another email id." });
 
                 var admin = new tblAdministrator()
                 {
@@ -119,13 +117,13 @@ namespace App.Schedule.WebApi.Controllers
 
                 if (response > 0)
                 {
-                    return Ok(new { status = true, message = "Successfully created.", data =admin });
+                    return Ok(new { status = true, data = admin, message = "Transaction successed." });
                 }
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data="" });
+                return Ok(new { status = false, data = "", message = "Transaction failed." });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "ex: "+ex.Message.ToString(), data ="" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -135,7 +133,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var admin = _db.tblAdministrators.Find(id);
@@ -153,24 +151,24 @@ namespace App.Schedule.WebApi.Controllers
                             _db.Entry(admin).State = EntityState.Modified;
                             var response = _db.SaveChanges();
                             if (response > 0)
-                                return Ok(new { status = true, data = admin });
+                                return Ok(new { status = true, data = admin, message = "Transaction successed." });
                             else
-                                return Ok(new { status = false, data = "There was a problem to update the data." });
+                                return Ok(new { status = false, data = "", message = "Transaction failed." });
                         }
                         else
                         {
-                            return Ok(new { status = false, data = "Please provide a valid login id." });
+                            return Ok(new { status = false, data = "", message = "Please provide a valid administrator id." });
                         }
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -179,7 +177,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "Please provide a valid admin id." });
                 else
                 {
                     var admin = _db.tblAdministrators.Find(id);
@@ -189,59 +187,33 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(admin).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = admin });
+                            return Ok(new { status = true, data = admin, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, data = "ex: Not a valid data to update. Please provide a valid id." });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            //try
-            //{
-            //    if (String.IsNullOrEmpty(email))
-            //        return Ok(new { status = false, data = "Please provide a valid email id." });
-            //    else
-            //    {
-            //        var admin = _db.tblAdministrators.Where(d => d.Email.ToLower() == email.ToLower()).FirstOrDefault();
-            //        //var isRegistered = _db.tblAdministrators.Any(d => d.Email.ToLower() == email.ToLower());
-            //        if (admin != null)
-            //        {
-            //            _db.tblAdministrators.Remove(admin);
-            //            var response = _db.SaveChanges();
-            //            if (response > 0)
-            //                return Ok(new { status = true, data = admin });
-            //            else
-            //                return Ok(new { status = false, data = "There was a problem to update the data." });
-            //        }
-            //        else
-            //        {
-            //            return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest(ex.Message.ToString());
-            //}
         }
 
         [NonAction]
         [AllowAnonymous]
-        public bool RegisterAdmin(AdministratorViewModel model, out string message)
+        public bool RegisterAdmin(AdministratorViewModel model, out tblAdministrator data, out string message)
         {
             var status = false;
+            data = null;
             try
             {
                 var isAny = _db.tblAdministrators.Any(d => d.Email.ToLower() == model.Email.ToLower());
                 if (isAny)
-                    message = "Please try another email id.";
+                    message = "This email id has been taken. Please try another email id.";
 
                 var admin = new tblAdministrator()
                 {
@@ -262,20 +234,17 @@ namespace App.Schedule.WebApi.Controllers
                 if (response > 0)
                 {
                     status = true;
-                    message = "Successed.";
+                    message = "Transaction successed.";
+                    data = admin;
                 }
                 else
                 {
-                    message = "Failed.";
+                    message = "Transaction failed.";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                var errmsg = ex.Message.ToString();
-                if (ex.InnerException != null)
-                    errmsg += "; " + ex.InnerException.Message.ToString();
-
-                message = "There was a problem. Please try again later." + errmsg;
+                message = "ex: " + ex.Message.ToString();
             }
             return status;
         }
@@ -303,11 +272,11 @@ namespace App.Schedule.WebApi.Controllers
                         if (response > 0)
                         {
                             status = true;
-                            message = "Successed.";
+                            message = "Transaction successed.";
                         }
                         else
                         {
-                            message = "Failed.";
+                            message = "Transaction failed.";
                         }
                     }
                     else
@@ -317,14 +286,54 @@ namespace App.Schedule.WebApi.Controllers
                 }
                 else
                 {
-                    message = "Not a valid admin.";
+                    message = "It is not a valid Admin information.";
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                message = "There was a problem. Please try again later.";
+                message = "ex: " + ex.Message.ToString();
             }
             return status;
         }
+
+        [NonAction]
+        public bool BusinessHourDefaultSetup(long serviceLocationId)
+        {
+            var result = false;
+            try
+            {
+                var now = DateTime.Now;
+                for (var i = 0; i < 7; i++)
+                {
+                    var businessHour = new tblBusinessHour()
+                    {
+                        WeekDayId = i,
+                        IsStartDay = i == 1 ? true : false,
+                        IsHoliday = i == 1 ? true : false,
+                        From = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0, DateTimeKind.Utc),
+                        To = new DateTime(now.Year, now.Month, now.Day, 18, 0, 0, DateTimeKind.Utc),
+                        IsSplit1 = false,
+                        FromSplit1 = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0, DateTimeKind.Utc),
+                        ToSplit1 = new DateTime(now.Year, now.Month, now.Day, 18, 0, 0, DateTimeKind.Utc),
+                        IsSplit2 = false,
+                        FromSplit2 = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0, DateTimeKind.Utc),
+                        ToSplit2 = new DateTime(now.Year, now.Month, now.Day, 18, 0, 0, DateTimeKind.Utc),
+                        ServiceLocationId = serviceLocationId
+                    };
+                    _db.tblBusinessHours.Add(businessHour);
+                }
+                var response = _db.SaveChanges();
+                if (response > 0)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+        }
+
     }
 }

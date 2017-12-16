@@ -1,0 +1,114 @@
+﻿@using App.Schedule.Domains.ViewModel
+@model ResponseViewModel<List<BusinessHourViewModel>>
+@{
+    ViewBag.Title = "Business Hour Setup";
+    Layout = "~/Views/Shared/_AfterLoginMaster.cshtml";
+}
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="@Url.Action("index", "hour", new { area = "admin" })">Business Hour</a></li>
+</ul>
+<div class="tab-content" style="padding:0px 10px;">
+    <div class="tab-pane active">
+        <div class="col-lg-12 margin10">
+            <div class="row">
+                @if (Model != null)
+                {
+                    if (!Model.Status)
+                    {
+                        <div id="errorBox" class="alert alert-danger" role="alert">
+                            <strong id="err_head">Error: </strong>
+                            <span id="err_title">@Model.Message</span>
+                        </div>
+                    }
+                    <table class="table table-striped">
+                        <tr>
+                            <td>
+                                Week Day
+                            </td>
+                            <td>
+                                Business Hour
+                            </td>
+                            <td>
+                                Setup
+                            </td>
+                        </tr>
+                        @foreach (var item in Model.Data)
+                        {
+                            if (item != null)
+                            {
+                                if (item.IsHoliday)
+                                {
+                                    <tr class="bg-danger">
+                                        <td></td>
+                                        <td class="text-danger">
+                                            @Enum.GetName(typeof(App.Schedule.Domains.ViewModel.DayFullType), (int)item.WeekDayId) closed for Appointment.
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("edit", "hour", new { area = "admin", id = item.Id })" class="btn btn-success">Edit</a>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    var hasHolidayClass = item.IsStartDay ? "bg-info" : "";
+                                    <tr class="@hasHolidayClass">
+                                        <td class="text-left">
+                                            @Enum.GetName(typeof(DayFullType), (int)item.WeekDayId)
+                                            @Html.EditorFor(d => item.WeekDayId, new { htmlAttributes = new { @class = "form-control hidden", @placeholder = "From", text = item.WeekDayId } })
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div>
+                                                    @item.From.ToString("hh:mm tt")
+                                                </div>
+                                                @if (item.IsSplit1.Value && item.FromSplit1.HasValue)
+                                                {
+                                                    <div>
+                                                        @item.FromSplit1.Value.ToString("hh:mm tt")
+                                                    </div>
+                                                }
+                                                @if (item.IsSplit2.Value && item.FromSplit2.HasValue)
+                                                {
+                                                    <div>
+                                                        @item.FromSplit2.Value.ToString("hh:mm tt")
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <div>
+                                                    @item.To.ToString("hh:mm tt")
+                                                </div>
+                                                @if (item.IsSplit1.Value && item.ToSplit1.HasValue)
+                                                {
+                                                    <div>
+                                                        @item.ToSplit1.Value.ToString("hh:mm tt")
+                                                    </div>
+                                                }
+                                                @if (item.IsSplit2.Value && item.ToSplit2.HasValue)
+                                                {
+                                                    <div>
+                                                        @item.ToSplit2.Value.ToString("hh:mm tt")
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("edit", "hour", new { area = "admin", id = item.Id })" class="btn btn-success">Edit</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </table>
+                }
+            </div>
+            <hr />
+            <div class="text-center">
+                <a href="@Url.Action("index", "accountsetup", new { area = "admin" })" class="btn btn-default">
+                    Account Setup
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,16 +18,17 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         // GET: api/membership
+        [AllowAnonymous]
         public IHttpActionResult Get()
         {
             try
             {
                 var model = _db.tblMemberships.ToList();
-                return Ok(new { status = true, data = model, message = "success" });
+                return Ok(new { status = true, data = model, message = "Transaction successed." });
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -37,19 +38,19 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, message = "Please provide a valid membership id.", data = "" });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id" });
                 else
                 {
                     var model = _db.tblMemberships.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, message = "", data = model });
+                        return Ok(new { status = true, data = model, message = "success" });
                     else
-                        return Ok(new { status = false, message = "Not found.", data = "" });
+                        return Ok(new { status = false, data = "", message = "Not found" });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message =  ex.Message.ToString() });
             }
         }
 
@@ -58,39 +59,44 @@ namespace App.Schedule.WebApi.Controllers
         {
             try
             {
-                if (model != null)
+                if (!ModelState.IsValid)
                 {
-                    var membership = new tblMembership()
-                    {
-                        Created = DateTime.Now.ToUniversalTime(),
-                        Description = model.Description,
-                        IsActive = model.IsActive,
-                        Title = model.Title,
-                        Benifits = model.Benifits,
-                        IsUnlimited = model.IsUnlimited,
-                        Price = model.Price,
-                        TotalAppointment = model.TotalAppointment,
-                        TotalCustomer = model.TotalCustomer,
-                        TotalEmployee = model.TotalEmployee,
-                        TotalLocation = model.TotalLocation,
-                        TotalOffers = model.TotalLocation,
-                        AdministratorId = model.AdministratorId
-                    };
-                    _db.tblMemberships.Add(membership);
-                    var response = _db.SaveChanges();
-                    if (response > 0)
-                        return Ok(new { status = true, message = "success", data = membership });
-                    else
-                        return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                    var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
+                    return Ok(new { status = false, data = "", message = errMessage });
                 }
-                else
+
+                var isAny = _db.tblMemberships.Any(d => d.Title.ToLower() == model.Title.ToLower());
+                if (isAny)
+                    return Ok(new { status = false, data = "", message = "Please try another name." });
+
+                var membership = new tblMembership()
                 {
-                    return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                    Created = DateTime.Now.ToUniversalTime(),
+                    Description = model.Description,
+                    IsActive = model.IsActive,
+                    Title = model.Title,
+                    Benifits = model.Benifits,
+                    IsUnlimited = model.IsUnlimited,
+                    Price = model.Price,
+                    TotalAppointment = model.TotalAppointment,
+                    TotalCustomer = model.TotalCustomer,
+                    TotalEmployee = model.TotalEmployee,
+                    TotalLocation = model.TotalLocation,
+                    TotalOffers = model.TotalLocation,
+                    AdministratorId = model.AdministratorId
+                };
+                _db.tblMemberships.Add(membership);
+                var response = _db.SaveChanges();
+
+                if (response > 0)
+                {
+                    return Ok(new { status = true, data = membership, message = "Transaction successed." });
                 }
+                return Ok(new { status = false, data = "", message = "Transaction failed." });
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -100,7 +106,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, message = "Please provide a valid membership ID.", data = "" });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var membership = _db.tblMemberships.Find(id);
@@ -123,19 +129,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(membership).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, message = "success", data = membership });
+                            return Ok(new { status = true, data = membership, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, message = "There was a problem to update the data.", data="" });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Please provide a valid administrator id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "There was a problem. Please try again later.", data = "" });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
@@ -145,7 +151,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid membership ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var membership = _db.tblMemberships.Find(id);
@@ -155,19 +161,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(membership).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, message = "success", data = membership });
+                            return Ok(new { status = true, data = membership, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, message = "There was a problem to update the data.", data ="" });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id.", data =""});
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok(new { status = false, message = "Not a valid data to update. Please provide a valid id." });
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
     }

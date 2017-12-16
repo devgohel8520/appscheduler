@@ -2,6 +2,7 @@
 using App.Schedule.Domains;
 using App.Schedule.Domains.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
@@ -28,6 +29,28 @@ namespace App.Schedule.WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        // GET: api/businesshour
+        public IHttpActionResult Get(long? id, TableType type)
+        {
+            try
+            {
+                var model = new List<tblBusinessHoliday>();
+                if (type == TableType.None)
+                {
+                    model = _db.tblBusinessHolidays.ToList();
+                }
+                else if (type == TableType.ServiceLocationId)
+                {
+                    model = _db.tblBusinessHolidays.Where(d => d.ServiceLocationId == id).ToList();
+                }
+                return Ok(new { status = true, data = model, message = "success" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -125,7 +148,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data ="", message = "Please provide a valid Id." });
                 else
                 {
                     var businessHoliday = _db.tblBusinessHolidays.Find(id);
@@ -134,19 +157,19 @@ namespace App.Schedule.WebApi.Controllers
                         _db.tblBusinessHolidays.Remove(businessHoliday);
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = "Successfully removed." });
+                            return Ok(new { status = true, data = "", message = "Successfully removed." });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, data = "", message = "There was a problem to update the data." });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Not a valid data to remove. Please provide a valid id." });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
     }

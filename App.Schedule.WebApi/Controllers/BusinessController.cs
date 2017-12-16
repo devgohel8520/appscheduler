@@ -1,13 +1,18 @@
-﻿using App.Schedule.Context;
-using App.Schedule.Domains;
-using App.Schedule.Domains.ViewModel;
-using System;
-using System.Data.Entity;
+﻿using System;
 using System.Linq;
 using System.Web.Http;
+using System.Data.Entity;
+using App.Schedule.Context;
+using App.Schedule.Domains;
+using App.Schedule.Domains.Helpers;
+using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.WebApi.Controllers
 {
+    /// <summary>
+    /// crud API for business.
+    /// You can call "api/business" for GET,POST,PUT and DELETE.
+    /// </summary>
     public class BusinessController : ApiController
     {
         private readonly AppScheduleDbContext _db;
@@ -37,19 +42,23 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide valid ID." });
                 else
                 {
-                    var model = _db.tblBusinesses.Find(id);
+                    var model = _db.tblBusinesses.Find(id.Value);
+                    model.tblBusinessCategory = _db.tblBusinessCategories.Find(model.BusinessCategoryId);
+                    model.tblMembership = _db.tblMemberships.Find(model.MembershipId);
+                    model.tblTimezone = _db.tblTimezones.Find(model.TimezoneId);
+
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                        return Ok(new { status = true, data = model, message = "success" });
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                        return Ok(new { status = false, data = "", message = "Not found" });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -182,5 +191,199 @@ namespace App.Schedule.WebApi.Controllers
                 return BadRequest(ex.Message.ToString());
             }
         }
+
+
+        [NonAction]
+        [AllowAnonymous]
+        public RegisterViewModel Register(RegisterViewModel model, out bool status, out string message)
+        {
+            var data = new RegisterViewModel();
+
+            var hasName = _db.tblBusinesses.Any(d => d.Name.ToLower() == model.Business.Name.ToLower());
+            var hasEmail = _db.tblBusinessEmployees.Any(d => d.Email.ToLower() == model.Business.Email.ToLower());
+            if (hasName)
+            {
+                status = false;
+                message = "This business name has been taken. Please try another name.";
+            }
+            else if (hasEmail)
+            {
+                status = false;
+                message = "This business email has been taken. Please try another email id.";
+            }
+            else
+            {
+                using (System.Data.Entity.DbContextTransaction dbTran = _db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var business = new tblBusiness()
+                        {
+                            Name = model.Business.Name,
+                            ShortName = model.Business.ShortName,
+                            IsInternational = model.Business.IsInternational,
+                            FaxNumbers = model.Business.FaxNumbers,
+                            PhoneNumbers = model.Business.PhoneNumbers,
+                            Logo = model.Business.Logo,
+                            Add1 = model.Business.Add1,
+                            Add2 = model.Business.Add2,
+                            City = model.Business.City,
+                            State = model.Business.State,
+                            CountryId = model.Business.CountryId,
+                            Email = model.Business.Email,
+                            Website = model.Business.Website,
+                            Created = DateTime.Now.ToUniversalTime(),
+                            IsActive = model.Business.IsActive,
+                            Zip = model.Business.Zip,
+                            MembershipId = model.Business.MembershipId,
+                            BusinessCategoryId = model.Business.BusinessCategoryId,
+                            TimezoneId = model.Business.TimezoneId
+                        };
+
+                        _db.tblBusinesses.Add(business);
+                        var responseBusiness = _db.SaveChanges();
+
+                        var serviceLocation = new tblServiceLocation()
+                        {
+                            Name = "Main Address",
+                            Add1 = model.Business.Add1,
+                            Add2 = model.Business.Add2,
+                            City = model.Business.City,
+                            State = model.Business.State,
+                            CountryId = model.Business.CountryId.Value,
+                            Created = DateTime.Now.ToUniversalTime(),
+                            IsActive = model.Business.IsActive,
+                            Zip = model.Business.Zip,
+                            BusinessId = business.Id,
+                            TimezoneId = business.TimezoneId,
+                            Description = ""
+                        };
+
+                        _db.tblServiceLocations.Add(serviceLocation);
+                        var responseServiceLocation = _db.SaveChanges();
+
+                        //Setup default business hours
+                        //var businessHourController = new BusinessHourController();
+                        //var responseBusinessHour = businessHourController.SetupBusinessHours(serviceLocation.Id);
+                        var today = DateTime.Now;
+                        var date = new DateTime(today.Year, today.Month, today.Day, 8, 00, 00, DateTimeKind.Utc);
+                        for (int i = 0; i < 7; i++)
+                        {
+                            var businessHour = new tblBusinessHour()
+                            {
+                                WeekDayId = i,
+                                IsStartDay = i == 0 ? true : false,
+                                IsHoliday = false,
+                                From = date,
+                                To = date.AddHours(10),
+                                IsSplit1 = false,
+                                FromSplit1 = null,
+                                ToSplit1 = null,
+                                IsSplit2 = false,
+                                FromSplit2 = null,
+                                ToSplit2 = null,
+                                ServiceLocationId = serviceLocation.Id
+                            };
+                            _db.tblBusinessHours.Add(businessHour);
+                        }
+                        var responseBusinessHour = _db.SaveChanges();
+                        //End
+
+                        var businessEmployee = new tblBusinessEmployee()
+                        {
+                            FirstName = model.Employee.FirstName,
+                            LastName = model.Employee.LastName,
+                            LoginId = model.Employee.Email,
+                            Password = Security.Encrypt(model.Employee.Password, true),
+                            Email = model.Employee.Email,
+                            STD = model.Employee.STD,
+                            PhoneNumber = model.Employee.PhoneNumber,
+                            ServiceLocationId = serviceLocation.Id,
+                            IsAdmin = true,
+                            Created = DateTime.Now.ToUniversalTime(),
+                            IsActive = true
+                        };
+                        _db.tblBusinessEmployees.Add(businessEmployee);
+                        var responseBusinessEmployee = _db.SaveChanges();
+
+                        var businessViewModel = new BusinessViewModel()
+                        {
+                            Add1 = business.Add1,
+                            Add2 = business.Add2,
+                            BusinessCategoryId = business.BusinessCategoryId,
+                            City = business.City,
+                            CountryId = business.CountryId,
+                            Created = business.Created,
+                            Email = business.Email,
+                            FaxNumbers = business.FaxNumbers,
+                            Id = business.Id,
+                            IsActive = business.IsActive,
+                            IsInternational = business.IsInternational,
+                            Logo = business.Logo,
+                            MembershipId = business.MembershipId,
+                            Name = business.Name,
+                            PhoneNumbers = business.PhoneNumbers,
+                            ShortName = business.ShortName,
+                            State = business.State,
+                            TimezoneId = business.TimezoneId,
+                            Website = business.Website,
+                            Zip = business.Zip
+                        };
+
+                        var businessEmployeeViewModel = new BusinessEmployeeViewModel()
+                        {
+                            Created = businessEmployee.Created,
+                            Email = businessEmployee.Email,
+                            FirstName = businessEmployee.FirstName,
+                            Id = businessEmployee.Id,
+                            IsActive = businessEmployee.IsActive,
+                            IsAdmin = businessEmployee.IsAdmin,
+                            LastName = businessEmployee.LastName,
+                            LoginId = businessEmployee.LoginId,
+                            PhoneNumber = businessEmployee.PhoneNumber,
+                            ServiceLocationId = businessEmployee.ServiceLocationId,
+                            STD = businessEmployee.STD
+                        };
+
+                        if (responseBusiness > 0 && responseServiceLocation > 0 && responseBusinessEmployee > 0 && responseBusinessHour > 0)
+                        {
+                            status = true;
+                            message = "Transaction successed.";
+                            data.Business = businessViewModel;
+                            data.Employee = businessEmployeeViewModel;
+                            dbTran.Commit();
+                        }
+                        else
+                        {
+                            status = false;
+                            var reason = "";
+                            if (responseBusiness <= 0)
+                                reason += "Business setup issue. ";
+                            if (responseServiceLocation <= 0)
+                                reason += " Service location issue.";
+                            if (responseBusinessEmployee <= 0)
+                                reason += " Business employee issue.";
+                            if (responseBusinessHour <= 0)
+                                reason += " Business hour issue.";
+
+                            message = "Registration failed. reason: " + reason;
+                            data.Business = new BusinessViewModel();
+                            data.Employee = new BusinessEmployeeViewModel();
+                            dbTran.Rollback();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        status = false;
+                        message = "Registration failed. ex: " + ex.Message.ToString();
+                        data.Business = new BusinessViewModel();
+                        data.Employee = new BusinessEmployeeViewModel();
+                        dbTran.Rollback();
+                    }
+                }
+            }
+            return data;
+        }
+
     }
 }

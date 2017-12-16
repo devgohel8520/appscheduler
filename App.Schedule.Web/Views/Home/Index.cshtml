@@ -1,31 +1,87 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home";
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+<div class="row bg-green-ap padAll">
+    <div class="container">
+        <h2 class="white-text">Are you looking for scheduling appointments online?</h2>
+        <h4 class="pad20 white-grey-text">
+            You already have all necessary equipment to schedule appointments online — you have a web browser. The rest is just a click away. On your computer screen, on your tablet, on your phone — anywhere!
+        </h4>
+        <h4 class="pad20 white-grey-text">
+            <b>Ap</b> Online Appointment Scheduler is the most reliable online appointment scheduling software available today. Bug-free apps, protected data, maximum uptime — that's Ap promise. Ap enables you to manage your customers, personnel, schedules, appointment calendars — all in one place, from any place.
+        </h4>
+        <p class="center-align">
+            <a class="btn btn-success btn-sm margin20" href="@Url.Action("Login","Home")" role="button">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Login
+            </a>
+            <a class="btn btn-info bga-primary btn-sm margin20" href="@Url.Action("Register","Home", new { isFree = "no" })" role="button">
+                Register with us.
+            </a>
+            <a class="btn btn-warning btn-sm margin20" href="@Url.Action("Register","Home", new { isFree = "yes" })" role="button">
+                Register for free for 30 days trial.
+            </a>
         </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
     </div>
 </div>
+
+<div class="jumbotron bga-transparent">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <blockquote>
+                    When you consider jumping into online scheduling you may decide to implement it by means and funds of your company, or you may choose to subscribe to the online appointment scheduling service maintained by Application Service Provider (ASP).
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <div class="container margin20">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>Business Admin</h3>
+                        <h5>
+                            Can setup business, hours, holidays, employee, customers...
+                        </h5>
+                        <a class="btn btn-default btn-block" href="@Url.Action("Login","Home", new { area = "Admin" })" class="btn btn-link">Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>Business Employee</h3>
+                        <h5>Can book manage, book and join appointment and so on...</h5>
+                        <a class="btn btn-default btn-block" href="@Url.Action("Login","Home", new { area = "Employee" })" class="btn btn-link">Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>Business Customer</h3>
+                        <h5>
+                            Can see the list appointment finished, upcomming, and manage it..
+                        </h5>
+                        <a class="btn btn-default btn-block" href="@Url.Action("Login","Home", new { area = "Customer" })" class="btn btn-link">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="margin20">
+    <div class="container">
+        &copy; @DateTime.Now.Year.ToString() Copyright Ap
+        <div class="pull-right">
+            <a href="#!">Privacy</a> &nbsp; | &nbsp;
+            <a href="#!">Terms &amp; Conditions.</a>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+    </script>
+}

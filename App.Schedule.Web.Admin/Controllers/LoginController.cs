@@ -1,9 +1,6 @@
-﻿using System;
-using System.Web;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using System.Threading.Tasks;
-using App.Schedule.Web.Admin.Models;
 using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.Web.Admin.Controllers
@@ -33,20 +30,21 @@ namespace App.Schedule.Web.Admin.Controllers
                 {
                     if (adminService != null)
                     {
-                        var response = await adminService.LoginIn(model.Data.Email, model.Data.Password);
+                        var response = await adminService.VerifyLoginCredential(model.Data.Email, model.Data.Password);
                         result.Status = response.Status;
                         result.Message = response.Message;
                         result.Data = response.Data;
                         if (response.Status)
                         {
-                            var tokenResponse = await adminService.PostAdminToken(model.Data.Email, model.Data.Password);
+                            var tokenResponse = await adminService.VerifyAndGetAdminAccessToken(model.Data.Email, model.Data.Password);
                             result.Status = result.Status;
                             result.Message = result.Message;
                             if (tokenResponse.Status)
                             {
                                 if (string.IsNullOrEmpty(tokenResponse.Data))
-                                    Logout();
-
+                                {
+                                    RedirectToAction("Logout", "Dashboard");
+                                }
                                 SetAdminSession(response.Data, model.Data.IsKeepLoggedIn, tokenResponse.Data);
                             }
                         }
@@ -64,19 +62,6 @@ namespace App.Schedule.Web.Admin.Controllers
                 result.Message = "There was a problem. Please try again later.";
             }
             return Json(new { status = result.Status, message = result.Message, data = result.Data }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Logout()
-        {
-            if (Request.Cookies["aappointment"] != null)
-            {
-                var admin = new HttpCookie("aappointment");
-                Session["aEmail"] = "";
-                admin.Expires = DateTime.Now.AddDays(-1d);
-                Response.Cookies.Add(admin);
-                return RedirectToAction("Index", "Login");
-            }
-            return RedirectToAction("Index", "Home");
         }
     }
 }

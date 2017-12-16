@@ -35,11 +35,13 @@ namespace App.Schedule.Services
                 {
                     returnResponse.Status = res.Status;
                     returnResponse.Message = res.Message;
+                    returnResponse.Data = res.Message;
                 }
             }
             catch (Exception ex)
             {
                 returnResponse.Message = ex.Message.ToString();
+                returnResponse.Data = ex.Message.ToString();
                 returnResponse.Status = false;
             }
             return returnResponse;

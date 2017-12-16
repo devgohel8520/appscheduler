@@ -77,7 +77,12 @@
     <Compile Include="tblServiceLocation.cs" />
     <Compile Include="tblTimezone.cs" />
     <Compile Include="ViewModel\AppointmentViewModel.cs" />
+    <Compile Include="ViewModel\LoginSessionViewModel.cs" />
+    <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\RegisterViewModel.cs" />
     <Compile Include="ViewModel\ResponseViewModel.cs" />
+    <Compile Include="ViewModel\ServiceDataViewModel.cs" />
+    <Compile Include="ViewModel\TableType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

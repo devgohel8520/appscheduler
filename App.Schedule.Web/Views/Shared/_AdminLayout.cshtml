@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <style>
+    </style>
+</head>
+<body>
+    <nav class="navbar bga-secondary link-text">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index","Dashboard", new { area = "Admin" })">
+                    Appointment<sup> <b>Admin</b></sup>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        @if (HttpContext.Current.Request.Cookies["aadminappointment"] != null)
+                        {
+                            var adminCookie = HttpContext.Current.Request.Cookies["aadminappointment"];
+                            if (adminCookie != null)
+                            {
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@adminCookie.Values["aFirstName"]  @adminCookie.Values["aLastName"] <span class="caret"></span></a>
+                            }
+                            else
+                            {
+                                Response.Redirect("~/Admin/Dashboard/Index");
+                            }
+                        }
+                        else
+                        {
+                            Response.Redirect("~/Admin/Home/Login");
+                        }
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Logout","Dashboard",new { area = "Admin"})">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

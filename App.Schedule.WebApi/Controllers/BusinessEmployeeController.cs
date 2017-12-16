@@ -6,6 +6,7 @@ using App.Schedule.Domains.Helpers;
 using System.Data.Entity;
 using App.Schedule.Domains.ViewModel;
 using App.Schedule.Domains;
+using System.Web;
 
 namespace App.Schedule.WebApi.Controllers
 {
@@ -24,11 +25,11 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 var model = _db.tblBusinessEmployees.ToList();
-                return Ok(new { status = true, data = model });
+                return Ok(new { status = true, data = model, message ="success" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -38,34 +39,54 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide valid ID." });
                 else
                 {
                     var model = _db.tblBusinessEmployees.Find(id);
                     if (model != null)
-                        return Ok(new { status = true, data = model });
+                        return Ok(new { status = true, data = model, message = "success" });
                     else
-                        return Ok(new { status = false, data = "Not found." });
+                        return Ok(new { status = false, data = "", message = "Not found" });
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
-        // GET: api/businessemployee/?loginid=value&password=value
-        public IHttpActionResult Get(string loginid, string password)
+        // GET: api/businessemployee/?emailid=value&password=value
+        public IHttpActionResult Get(string email, string password)
         {
             try
             {
+                var loginSession = new LoginSessionViewModel();
+                password = HttpContext.Current.Server.UrlDecode(password);
                 var pass = Security.Encrypt(password, true);
-                var status = _db.tblBusinessEmployees.Any(d => d.LoginId == loginid && d.Password == pass);
-                return Ok(new { status = status, data = status == true ? "valid credential" : "Not a valid credential" });
+                loginSession.Employee = _db.tblBusinessEmployees.Where(d => d.Email.ToLower() == email.ToLower() && d.Password
+                == pass && d.IsActive == true).FirstOrDefault();
+                if (loginSession.Employee != null)
+                {
+                    loginSession.Employee.Password = "";
+                    var serviceLocation = _db.tblServiceLocations.Find(loginSession.Employee.ServiceLocationId);
+                    if (serviceLocation != null)
+                    {
+                        loginSession.Business = _db.tblBusinesses.Find(serviceLocation.BusinessId);
+                        return Ok(new { status = true, data = loginSession, message = "Valid credential" });
+                    }
+                    else
+                    {
+                        return Ok(new { status = false, data = "", message = "Not a valid credential" });
+                    }
+                }
+                else
+                {
+                    return Ok(new { status = false, data = "", message = "Not a valid credential" });
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -104,7 +125,7 @@ namespace App.Schedule.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -154,7 +175,7 @@ namespace App.Schedule.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
 
@@ -186,7 +207,7 @@ namespace App.Schedule.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = ex.Message.ToString() });
             }
         }
     }

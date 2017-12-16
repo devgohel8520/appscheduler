@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "Account Setup";
+    Layout = "~/Views/Shared/_AfterLoginMaster.cshtml";
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Account Setup Master</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="@Url.Action("index","account",new { area="admin"})" class="btn btn-link">
+                                Profile setup
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("index","membership",new { area = "admin" })" class="btn btn-link">
+                                Membership setup
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("index","businessadmin",new { area = "admin" })" class="btn btn-link">
+                                Administrator setup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Business Setup</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="@Url.Action("index","hour",new { area = "admin" })"  class="btn btn-link">
+                                Business Hours setup
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("index","holiday",new { area = "admin" })"  class="btn btn-link">
+                                Business Holiday setup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Business Users</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="#" class="btn btn-link">
+                                Business User setup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Business Service Location setup</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="#" class="btn btn-link">
+                                Service Location setup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Employee</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="#" class="btn btn-link">
+                                Employee setup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Offer setup</b></div>
+                <div class="panel-body">
+                    <ul class="fc-list-item">
+                        <li>
+                            <a href="#" class="btn btn-link">
+                                Offer summary
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

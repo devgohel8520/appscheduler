@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using App.Schedule.Domains.ViewModel;
@@ -20,17 +19,7 @@ namespace App.Schedule.Services
             {
                 var url = String.Format(AppointmentService.GET_ADMINS);
                 var response = await this.appointmentService.httpClient.GetAsync(url);
-                var result = await response.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<ResponseViewModel<List<AdministratorViewModel>>>(result);
-                if (res != null)
-                {
-                    if (res.Status)
-                        model = res.Data;
-                    else
-                        model = null;
-                }
-                else
-                    model = null;
+                model = await base.GetHttpResponseList<AdministratorViewModel>(response);
             }
             catch
             {
@@ -46,17 +35,7 @@ namespace App.Schedule.Services
             {
                 var url = String.Format(AppointmentService.GET_COUNTRIES);
                 var response = await this.appointmentService.httpClient.GetAsync(url);
-                var result = await response.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<ResponseViewModel<List<CountryViewModel>>>(result);
-                if (res != null)
-                {
-                    if (res.Status)
-                        model = res.Data;
-                    else
-                        model = null;
-                }
-                else
-                    model = null;
+                model = await base.GetHttpResponseList<CountryViewModel>(response);
             }
             catch
             {
@@ -72,17 +51,7 @@ namespace App.Schedule.Services
             {
                 var url = String.Format(AppointmentService.GET_TIMEZONES);
                 var response = await this.appointmentService.httpClient.GetAsync(url);
-                var result = await response.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<ResponseViewModel<List<TimezoneViewModel>>>(result);
-                if (res != null)
-                {
-                    if (res.Status)
-                        model = res.Data;
-                    else
-                        model = null;
-                }
-                else
-                    model = null;
+                model = await base.GetHttpResponseList<TimezoneViewModel>(response);
             }
             catch
             {
@@ -98,17 +67,7 @@ namespace App.Schedule.Services
             {
                 var url = String.Format(AppointmentService.GET_MEMBERSHIPS);
                 var response = await this.appointmentService.httpClient.GetAsync(url);
-                var result = await response.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<ResponseViewModel<List<MembershipViewModel>>>(result);
-                if (res != null)
-                {
-                    if (res.Status)
-                        model = res.Data;
-                    else
-                        model = null;
-                }
-                else
-                    model = null;
+                model = await base.GetHttpResponseList<MembershipViewModel>(response);
             }
             catch
             {
@@ -124,17 +83,7 @@ namespace App.Schedule.Services
             {
                 var url = String.Format(AppointmentService.GET_BUSINESSCATEGORIES);
                 var response = await this.appointmentService.httpClient.GetAsync(url);
-                var result = await response.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<ResponseViewModel<List<BusinessCategoryViewModel>>>(result);
-                if (res != null)
-                {
-                    if (res.Status)
-                        model = res.Data;
-                    else
-                        model = null;
-                }
-                else
-                    model = null;
+                model = await base.GetHttpResponseList<BusinessCategoryViewModel>(response);
             }
             catch
             {
@@ -142,6 +91,5 @@ namespace App.Schedule.Services
             }
             return model;
         }
-
     }
 }

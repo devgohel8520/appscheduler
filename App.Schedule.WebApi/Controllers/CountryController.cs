@@ -18,71 +18,56 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         // GET: api/country
+        [AllowAnonymous]
         public IHttpActionResult Get()
         {
             try
             {
                 var model = _db.tblCountries.ToList();
-                return Ok(new { status = true, data = model });
+                return Ok(new { status = true, data = model, message = "Transaction successed." });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
         // GET: api/country/5
         public IHttpActionResult Get(long? id)
         {
-            var result = new ResponseViewModel<CountryViewModel>();
             try
             {
                 if (!id.HasValue)
-                {
-                    result.Status = false;
-                    result.Message = "Please provide a valid id.";
-                }
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var model = _db.tblCountries.Find(id);
                     if (model != null)
-                    {
-                        result.Status = true;
-                        result.Data = new CountryViewModel()
-                        {
-                            AdministratorId = model.AdministratorId,
-                            CurrencyCode = model.CurrencyCode,
-                            CurrencyName = model.CurrencyName,
-                            Id = model.Id,
-                            ISO = model.ISO,
-                            ISO3 = model.ISO3,
-                            Name = model.Name,
-                            PhoneCode = model.PhoneCode
-                        };
-                    }
+                        return Ok(new { status = true, data = model, message = "Transaction successed." });
                     else
-                    {
-                        result.Status = false;
-                        result.Message = "Country not found.";
-                    }
+                        return Ok(new { status = false, data = "", message = "Not found." });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
 
         // POST: api/country
         public IHttpActionResult Post([FromBody]CountryViewModel model)
         {
-            var result = new ResponseViewModel<CountryViewModel>();
             try
             {
-                if (!model.PhoneCode.HasValue)
-                    model.PhoneCode = 0;
+                if (!ModelState.IsValid)
+                {
+                    var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
+                    return Ok(new { status = false, data = "", message = errMessage });
+                }
+
+                var isAny = _db.tblCountries.Any(d => d.Name.ToLower() == model.Name.ToLower());
+                if (isAny)
+                    return Ok(new { status = false, data = "", message = "Please try another name." });
 
                 var country = new tblCountry()
                 {
@@ -94,27 +79,20 @@ namespace App.Schedule.WebApi.Controllers
                     PhoneCode = model.PhoneCode.Value,
                     AdministratorId = model.AdministratorId,
                 };
+
                 _db.tblCountries.Add(country);
                 var response = _db.SaveChanges();
+
                 if (response > 0)
                 {
-                    model.Id = country.Id;
-                    result.Status = true;
-                    result.Message = "Successfully added";
-                    result.Data = model;
+                    return Ok(new { status = true, data = country, message = "Transaction successed." });
                 }
-                else
-                {
-                    result.Status = false;
-                    result.Message = "There was a problem. Please try again later.";
-                }
+                return Ok(new { status = false, data = "", message = "Transaction failed." });
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "ex: There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
 
         // PUT: api/country/5
@@ -123,7 +101,7 @@ namespace App.Schedule.WebApi.Controllers
             try
             {
                 if (!id.HasValue)
-                    return Ok(new { status = false, data = "Please provide a valid ID." });
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var country = _db.tblCountries.Find(id);
@@ -139,33 +117,29 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(country).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                            return Ok(new { status = true, data = country });
+                            return Ok(new { status = true, data = country, message = "Transaction successed." });
                         else
-                            return Ok(new { status = false, data = "There was a problem to update the data." });
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        return Ok(new { status = false, data = "Not a valid data to update. Please provide a valid id." });
+                        return Ok(new { status = false, data = "", message = "Please provide a valid administrator id." });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
         // DELETE: api/country/5
         public IHttpActionResult Delete(int? id)
         {
-            var result = new ResponseViewModel<string>();
             try
             {
                 if (!id.HasValue)
-                {
-                    result.Status = false;
-                    result.Message = "Please provide a valid country id.";
-                }
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var country = _db.tblCountries.Find(id);
@@ -174,29 +148,20 @@ namespace App.Schedule.WebApi.Controllers
                         _db.tblCountries.Remove(country);
                         var response = _db.SaveChanges();
                         if (response > 0)
-                        {
-                            result.Status = true;
-                            result.Message = "Successfully removed.";
-                        }
+                            return Ok(new { status = true, data = country, message = "Transaction successed." });
                         else
-                        {
-                            result.Status = false;
-                            result.Message = "There was a problem. Please try again later.";
-                        }
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        result.Status = false;
-                        result.Message = "Please provide a valid country Id.";
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "ex: There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
     }
 }

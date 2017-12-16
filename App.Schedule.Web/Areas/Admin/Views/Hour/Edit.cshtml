@@ -1,0 +1,166 @@
+﻿@using App.Schedule.Domains.ViewModel;
+@model ResponseViewModel<BusinessHourViewModel>
+
+@{
+    ViewBag.Title = "Update Business Hour Setup";
+    Layout = "~/Views/Shared/_AfterLoginMaster.cshtml";
+}
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="@Url.Action("index", "hour", new { area = "admin" })">Business Hour Setup</a></li>
+</ul>
+<div class="tab-content" style="padding:0px 10px;">
+    <div class="tab-pane active">
+        <div class="col-lg-12 margin10">
+            <div class="row">
+                @if (Model != null)
+                {
+                    if (!Model.Status)
+                    {
+                        <div id="errorBox" class="alert alert-danger" role="alert">
+                            <strong id="err_head">Error: </strong>
+                            <span id="err_title">@Model.Message</span>
+                        </div>
+                    }
+                    if (Model.Data != null)
+                    {
+                        using (Ajax.BeginForm("edit", "hour", new AjaxOptions { }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(d => d.Data.Id)
+                            @Html.HiddenFor(d => d.Data.WeekDayId)
+                            @Html.HiddenFor(d => d.Data.ServiceLocationId)
+                            <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+                                <strong id="err_head">Error: </strong>
+                                <span id="err_title">Please try again later.</span>
+                            </div>
+                            <table class="table table-striped">
+                                <tr>
+                                    <td class="text-right">Week Day</td>
+                                    <td>
+                                        @Enum.GetName(typeof(App.Schedule.Domains.ViewModel.DayFullType), (int)Model.Data.WeekDayId)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Is StartDay</td>
+                                    <td>
+                                        @Html.CheckBoxFor(d => d.Data.IsStartDay, new { htmlAttributes = new { @type = "checkbox" } })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Is Holiday</td>
+                                    <td>
+                                        @Html.CheckBoxFor(d => d.Data.IsHoliday, new { htmlAttributes = new { @type = "checkbox" } })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">
+                                        Hour
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tr style="display:block;">
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.From, new SelectList(ViewBag.FromHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.To, new SelectList(ViewBag.ToHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-default" onclick="showSplit(1)">Split</button>
+                                                </td>
+                                            </tr>
+                                            @{ 
+                                                string isSplit1 = "display:none;";
+                                                if (Model.Data.IsSplit1.Value)
+                                                {
+                                                    isSplit1 = "display:block;";
+                                                }
+                                            }
+                                            <tr id="split1" style=@isSplit1>
+                                                @Html.HiddenFor(d => d.Data.IsSplit1)
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.FromSplit1, new SelectList(ViewBag.FromHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.ToSplit1, new SelectList(ViewBag.ToHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-default" onclick="showSplit(2)">Split</button>
+                                                    <button class="btn btn-default" onclick="hideSplit(1)">Close</button>
+                                                </td>
+                                            </tr>
+                                            @{
+                                                string isSplit2 = "display:none;";
+                                                if (Model.Data.IsSplit2.Value)
+                                                {
+                                                    isSplit2 = "display:block;";
+                                                }
+                                            }
+                                            <tr id="split2" style=@isSplit2>
+                                                @Html.HiddenFor(d => d.Data.IsSplit2)
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.FromSplit2, new SelectList(ViewBag.FromHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(d => d.Data.ToSplit2, new SelectList(ViewBag.ToHours, "Value", "Text"), new { @class = "form-control" })
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-default" onclick="hideSplit(2)">Close</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"></td>
+                                    <td>
+                                        <button onclick="onSubmit(this,'@Url.Action("index","hour", new { area = "admin" })');" class="btn btn-success col-lg-4">Edit</button>
+                                        <a href="@Url.Action("index", "hour", new { area = "admin" })" class="btn btn-default col-lg-4" style="margin-left:10px;">Back</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                    }
+                    else
+                    {
+                        <div>
+                            No records found.
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+        });
+
+        function showSplit(id) {
+            if (id === 1) {
+                $('#split1').css('display', "block");
+                $('#Data_IsSplit1').val(true);
+            }
+            else if (id === 2) {
+                $('#split2').css('display', "block");
+                $('#Data_IsSplit2').val(true);
+            }
+        }
+        function hideSplit(id) {
+            if (id === 1) {
+                $('#split1').css('display', "none");
+                $('#split2').css('display', "none");
+                $('#Data_IsSplit1').val(false);
+                $('#Data_IsSplit2').val(false);
+            }
+            else if (id === 2) {
+                $('#split2').css('display', "none");
+                $('#Data_IsSplit2').val(false);
+            }
+        }
+    </script>
+}

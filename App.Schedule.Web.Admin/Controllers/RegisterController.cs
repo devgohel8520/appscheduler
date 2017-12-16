@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using App.Schedule.Services;
 using System.Threading.Tasks;
 using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.Web.Admin.Controllers
 {
-    public class RegisterController : Controller
+    public class RegisterController : LoginBaseController
     {
-        private RegisterService registerService;
-
-        public RegisterController()
-        {
-            registerService = new RegisterService("");
-        }
-
         public ActionResult Index()
         {
             var model = new AdministratorViewModel();
@@ -33,7 +25,7 @@ namespace App.Schedule.Web.Admin.Controllers
             }
             else
             {
-                var response = await this.registerService.PostRegister(model);
+                var response = await this.adminService.Add(model);
                 if (response.Status)
                 {
                     return Json(new { status = true, message = "Successfully registered." }, JsonRequestBehavior.AllowGet);

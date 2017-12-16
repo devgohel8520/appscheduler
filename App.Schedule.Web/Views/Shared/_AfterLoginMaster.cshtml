@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    <style>
+        .list-menu {
+            padding: 10px;
+        }
+        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+            vertical-align:middle;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-fixed-top bga-secondary link-text">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index","Dashboard", new { area = "Admin" })">
+                    Appointment<sup> <b>Admin</b></sup>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        @if (HttpContext.Current.Request.Cookies["aadminappointment"] != null)
+                        {
+                            var adminCookie = HttpContext.Current.Request.Cookies["aadminappointment"];
+                            if (adminCookie != null)
+                            {
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@adminCookie.Values["aFirstName"]  @adminCookie.Values["aLastName"] <span class="caret"></span></a>
+                            }
+                            else
+                            {
+                                Response.Redirect("~/Admin/Dashboard/Index");
+                            }
+                        }
+                        else
+                        {
+                            Response.Redirect("~/Admin/Home/Login");
+                        }
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Logout","Dashboard",new { area = "Admin"})">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid padd60">
+        <div class="container">
+            <div class="row middle-layout">
+                <div class="col-lg-3">
+                    <div class="row">
+                        <div class="list-group">
+                            <div class="list-group-item clearfix">
+                             <span class="pull-left">
+                                 <b>Menu</b>
+                             </span>
+                             <span class="pull-right">
+                                 <a class="navbar-toggle" data-toggle="collapse" data-target="#toggle-left-side-menu" aria-expanded="false">
+                                     <span class="icon-bar"></span>
+                                     <span class="icon-bar"></span>
+                                     <span class="icon-bar"></span>
+                                 </a>
+                             </span>
+                            </div>
+                            <div id="toggle-left-side-menu" class="collapse navbar-collapse row">
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#dashboard" aria-expanded="true" aria-controls="calendar"><b>Dashboard</b></button>
+                                <div id="dashboard" class="panel-collapse collapse">
+                                    <a class="list-group-item col-lg-12 text-left" href="@Url.Action("Index","Dashboard",new { area="Admin" })">Home</a>
+                                </div>
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#calendar" aria-expanded="true" aria-controls="calendar"><b>Calendar</b></button>
+                                <div id="calendar" class="panel-collapse collapse in">
+                                    <button type="button" class="list-group-item">Month</button>
+                                    <button type="button" class="list-group-item">Timeline</button>
+                                    <button type="button" class="list-group-item">Reports</button>
+                                </div>
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#appointment" aria-expanded="true" aria-controls="appointment"><b>Appointments</b></button>
+                                <div id="appointment" class="panel-collapse collapse in">
+                                    <button type="button" class="list-group-item">New</button>
+                                    <button type="button" class="list-group-item">Search</button>
+                                    <button type="button" class="list-group-item">Block</button>
+                                    <button type="button" class="list-group-item">Close</button>
+                                </div>
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#employee" aria-expanded="true" aria-controls="employee"><b>Employee</b></button>
+                                <div id="employee" class="panel-collapse collapse">
+                                    <button type="button" class="list-group-item">Search</button>
+                                    <button type="button" class="list-group-item">New</button>
+                                    <button type="button" class="list-group-item">Browse</button>
+                                    <button type="button" class="list-group-item">Index</button>
+                                </div>
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#customer" aria-expanded="true" aria-controls="customer"><b>Customer</b></button>
+                                <div id="customer" class="panel-collapse collapse">
+                                    <button type="button" class="list-group-item">Search</button>
+                                    <button type="button" class="list-group-item">New</button>
+                                    <button type="button" class="list-group-item">Browse</button>
+                                    <button type="button" class="list-group-item">Index</button>
+                                </div>
+                                <button type="button" class="list-group-item" data-toggle="collapse" href="#setup" aria-expanded="false" aria-controls="setup"><b>Setup</b></button>
+                                <div id="setup" class="panel-collapse collapse in">
+                                    <a type="button" class="list-group-item" href="@Url.Action("Index","AccountSetup",new { area = "Admin" })">Account Setup</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="container" style="padding-bottom:20px;">
+            <div class="row">
+                <div class="col-sm-12 col-md-10">
+                    &copy; @DateTime.Now.Year.ToString() Copyright Ap.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

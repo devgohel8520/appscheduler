@@ -1,10 +1,10 @@
-﻿using App.Schedule.Context;
-using App.Schedule.Domains;
-using App.Schedule.Domains.ViewModel;
-using System;
-using System.Data.Entity;
+﻿using System;
 using System.Linq;
 using System.Web.Http;
+using System.Data.Entity;
+using App.Schedule.Context;
+using App.Schedule.Domains;
+using App.Schedule.Domains.ViewModel;
 
 namespace App.Schedule.WebApi.Controllers
 {
@@ -18,67 +18,57 @@ namespace App.Schedule.WebApi.Controllers
         }
 
         // GET: api/timezone
+        [AllowAnonymous]
         public IHttpActionResult Get()
         {
             try
             {
                 var model = _db.tblTimezones.ToList();
-                return Ok(new { status = true, data = model });
+                return Ok(new { status = true, data = model, message = "Transaction successed." });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message.ToString());
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
         }
 
         // GET: api/timezone/5
         public IHttpActionResult Get(long? id)
         {
-            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
                 if (!id.HasValue)
-                {
-                    result.Status = false;
-                    result.Message = "Timezone id is required.";
-                }
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var model = _db.tblTimezones.Find(id);
                     if (model != null)
-                    {
-                        result.Status = true;
-                        result.Data = new TimezoneViewModel()
-                        {
-                            AdministratorId = model.AdministratorId,
-                            CountryId = model.CountryId,
-                            Id = model.Id,
-                            IsDST = model.IsDST,
-                            Title = model.Title,
-                            UtcOffset = model.UtcOffset
-                        };
-                    }
+                        return Ok(new { status = true, data = model, message = "Transaction successed." });
                     else
-                    {
-                        result.Status = false;
-                        result.Message = "Please provide a valid timezone id";
-                    }
+                        return Ok(new { status = false, data = "", message = "Not found." });
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
 
         // POST: api/timezone
         public IHttpActionResult Post([FromBody]TimezoneViewModel model)
         {
-            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var errMessage = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage));
+                    return Ok(new { status = false, data = "", message = errMessage });
+                }
+
+                var isAny = _db.tblTimezones.Any(d => d.Title.ToLower() == model.Title.ToLower());
+                if (isAny)
+                    return Ok(new { status = false, data = "", message = "Please try another name." });
+
                 var timeZone = new tblTimezone()
                 {
                     Title = model.Title,
@@ -89,44 +79,27 @@ namespace App.Schedule.WebApi.Controllers
                 };
                 _db.tblTimezones.Add(timeZone);
                 var response = _db.SaveChanges();
+
                 if (response > 0)
                 {
-                    result.Status = true;
-                    result.Data = new TimezoneViewModel()
-                    {
-                        AdministratorId = model.AdministratorId,
-                        CountryId = model.CountryId,
-                        Id = model.Id,
-                        IsDST = model.IsDST,
-                        Title = model.Title,
-                        UtcOffset = model.UtcOffset
-                    };
+                    return Ok(new { status = true, data = timeZone, message = "Transaction successed." });
                 }
-                else
-                {
-                    result.Status = false;
-                    result.Message = "There was a problem. Please try again later.";
-                }
+                return Ok(new { status = false, data = "", message = "Transaction failed." });
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
+
         }
 
         // PUT: api/timezone/5
         public IHttpActionResult Put(long? id, [FromBody]TimezoneViewModel model)
         {
-            var result = new ResponseViewModel<TimezoneViewModel>();
             try
             {
                 if (!id.HasValue)
-                {
-                    result.Status = false;
-                    result.Message = "Timezone id is required.";
-                }
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
                     var timeZone = _db.tblTimezones.Find(id);
@@ -141,74 +114,51 @@ namespace App.Schedule.WebApi.Controllers
                         _db.Entry(timeZone).State = EntityState.Modified;
                         var response = _db.SaveChanges();
                         if (response > 0)
-                        {
-                            result.Status = true;
-                            model.Id = timeZone.Id;
-                            result.Data = model;
-                        }
+                            return Ok(new { status = true, data = timeZone, message = "Transaction successed." });
                         else
-                        {
-                            result.Status = false;
-                            result.Message = "There was a problem. Please try again later.";
-                        }
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        result.Status = false;
-                        result.Message = "There was a problem. Please try again later.";
+                        return Ok(new { status = false, data = "", message = "Please provide a valid administrator id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
 
         // DELETE: api/timeZone/5
         public IHttpActionResult Delete(int? id)
         {
-            var result = new ResponseViewModel<string>();
             try
             {
                 if (!id.HasValue)
-                {
-                    result.Status = false;
-                    result.Message = "Timezone id is required.";
-                }
+                    return Ok(new { status = false, data = "", message = "Please provide a valid id." });
                 else
                 {
-                    var timezone = _db.tblTimezones.Find(id);
-                    if (timezone != null)
+                    var timeZone = _db.tblTimezones.Find(id);
+                    if (timeZone != null)
                     {
-                        _db.tblTimezones.Remove(timezone);
+                        _db.tblTimezones.Remove(timeZone);
                         var response = _db.SaveChanges();
                         if (response > 0)
-                        {
-                            result.Status = true;
-                            result.Message = "Successfully removed.";
-                        }
+                            return Ok(new { status = true, data = timeZone, message = "Transaction successed." });
                         else
-                        {
-                            result.Status = false;
-                            result.Message = "There was a problem. Please try again later.";
-                        }
+                            return Ok(new { status = false, data = "", message = "Transaction failed." });
                     }
                     else
                     {
-                        result.Status = false;
-                        result.Message = "Please provide a valid timezone Id.";
+                        return Ok(new { status = false, data = "", message = "Not a valid data to update. Please provide a valid id." });
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                result.Status = false;
-                result.Message = "ex: There was a problem. Please try again later.";
+                return Ok(new { status = false, data = "", message = "ex: " + ex.Message.ToString() });
             }
-            return Ok(result);
         }
     }
 }

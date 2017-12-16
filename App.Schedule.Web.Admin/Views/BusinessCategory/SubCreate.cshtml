@@ -1,0 +1,143 @@
+﻿@model App.Schedule.Domains.ViewModel.ServiceDataViewModel<App.Schedule.Domains.ViewModel.BusinessCategoryViewModel>
+@{
+    ViewBag.Title = "New Business Sub Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        @if (Model != null && Model.HasError)
+        {
+            <div id="errorBox" class="alert alert-danger" role="alert">
+                <strong id="err_head">Error: </strong>
+                <span id="err_title">@Model.Error</span>
+                @if (Model.HasMore)
+                {
+                    <button data-toggle="collapse" data-target="#moreError">More</button>
+                    <div id="moreError" class="collapse">
+                        @Model.ErrorDescription
+                    </div>
+                }
+            </div>
+        }
+        <div id="errorBox" class="alert alert-danger" role="alert" style="display:none;">
+            <strong id="err_head">Error: </strong>
+            <span id="err_title">Please try again later.</span>
+        </div>
+
+        <div class="bg-box bg-bluegray">
+            @using (Ajax.BeginForm("SubCreate", new AjaxOptions { }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(d => d.Data.ParentId)
+                <div class="form-group input-group input-group-lg">
+                    <label class="input-lg input-group-addon">
+                        Add a new Business Sub Category
+                    </label>
+                </div>
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Name, new { htmlAttributes = new { @class = "form-control", placeholder = "Title" } })
+                                <span class="input-group-addon" id="sizing-addon2">Name</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Type, new { htmlAttributes = new { @class = "form-control", placeholder = "Type" } })
+                                <span class="input-group-addon" id="sizing-addon2">Type</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.OrderNumber, new { htmlAttributes = new { @class = "form-control", placeholder = "Order No." } })
+                                <span class="input-group-addon" id="sizing-addon2">Order No.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Data.Description, new { htmlAttributes = new { @class = "form-control", placeholder = "Description" } })
+                                <span class="input-group-addon" id="sizing-addon2">Description</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                @Html.DropDownListFor(model => model.Data.ParentId, new SelectList(ViewBag.ParentId, "Value", "Text"), "--Select Business Category--", new { @class = "form-control" })
+                                <span class="input-group-addon" id="sizing-addon2">Parent Category</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input id="picturelinkfile" type="file" class="form-control" onchange="onFileChange(this)" />
+                                @Html.HiddenFor(model => model.Data.PictureLink)
+                                <span class="input-group-addon" id="sizing-addon2">
+                                    Picture
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <div class="form-control text-center" style="height:60px;">
+                                    <img id="categoryImage" class="img-circle" src="~/Content/Images/NoImageThumb.gif" width="50" height="50" />
+                                </div>
+                                <span class="input-group-addon" id="sizing-addon2">
+                                    Picture View
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    @Html.CheckBoxFor(model => model.Data.IsActive, new { htmlAttributes = new { @class = "form-control" } })
+                                </span>
+                                <span class="form-control">
+                                    Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="btnSave" type="button" value="Save" onclick="onSubmit(this,'@Url.Action("SubIndex","BusinessCategory", new { id = Model.Data.ParentId })');" class="btn btn-sm btn-dark col-md-6" />
+                            <input type="button" class="btn btn-sm btn-default col-md-6" value="Back" onclick="@("window.location.href='" + @Url.Action("SubIndex", "BusinessCategory", new { id = Model.Data.ParentId } ) + "'");" />
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+
+</div>
+
+@section scripts{
+    <script>
+        function onFileChange(inputFile) {
+            var file = inputFile.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                $("#Data_PictureLink").val(reader.result);
+                $('#categoryImage').attr('src', reader.result);
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+        }
+    </script>
+}

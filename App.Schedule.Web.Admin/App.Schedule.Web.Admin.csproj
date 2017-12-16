@@ -166,8 +166,6 @@
     </Compile>
     <Compile Include="Models\DashboardViewModel.cs" />
     <Compile Include="Models\ForgotViewModel.cs" />
-    <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\ServiceDataViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +174,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\logo.png" />
+    <Content Include="Content\Images\NoImageThumb.gif" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -244,6 +243,13 @@
     <Content Include="Views\Membership\Edit.cshtml" />
     <Content Include="Views\Membership\Delete.cshtml" />
     <Content Include="Views\BusinessCategory\Index.cshtml" />
+    <Content Include="Views\BusinessCategory\Create.cshtml" />
+    <Content Include="Views\BusinessCategory\Edit.cshtml" />
+    <Content Include="Views\BusinessCategory\Deactive.cshtml" />
+    <Content Include="Views\BusinessCategory\SubIndex.cshtml" />
+    <Content Include="Views\BusinessCategory\SubCreate.cshtml" />
+    <Content Include="Views\BusinessCategory\SubEdit.cshtml" />
+    <Content Include="Views\BusinessCategory\SubDeactive.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
